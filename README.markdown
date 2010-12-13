@@ -5,15 +5,16 @@ Copyright (c) 2010 Aaron C. de Bruyn <aaron@heyaaron.com>
 OpenMesher is basically like tunneldigger in that it creates OpenVPN point to point tunnels, but it has quite a few fixes and enhancements.
 
 Here is a list of improvements:
+
 * OpenMesher takes a simple list of routers and meshes them.  TunnelDigger requires you to explicitally specify each link between routers.
 * OpenMesher takes a list of netblocks (10.1.2.0/24, 10.1.15.0/28) and automatically allocates /30s from each for assignment to interfaces.  TunnelDigger requires you to manually specify IPs on each side of the p2p link.
 * OpenMesher has support for modules:  We currently support generating quagga, reverse DNS, OpenVPN, Shorewall, and deb config files for deployment from a deb.
-* * Quagga: We can generate a ripd.conf and zebra.conf for each router
-* * ReverseDNS: We can generate a BIND reverse DNS file for each IP used in the p2p /30 blocks.
-* * OpenVPN: Obviously we generate the OpenVPN config files for the p2p links
-* * Shorewall: We generate files that can be included by your interfaces and rules file to allow the VPN p2p links to connect and route
-* * Debs: We generate deb files that include all the module files along with commands to restart services and package them up for deployment
-* * Deploy: Still a bit buggy, but we SCP the deb files into /root/router-name.deb for you
+* Module -- Quagga: We can generate a ripd.conf and zebra.conf for each router
+* Module -- ReverseDNS: We can generate a BIND reverse DNS file for each IP used in the p2p /30 blocks.
+* Module -- OpenVPN: Obviously we generate the OpenVPN config files for the p2p links
+* Module -- Shorewall: We generate files that can be included by your interfaces and rules file to allow the VPN p2p links to connect and route
+* Module -- Debs: We generate deb files that include all the module files along with commands to restart services and package them up for deployment
+* Module -- Deploy: Still a bit buggy, but we SCP the deb files into /root/router-name.deb for you
 * Perl sucks
 * TunnelDigger appears unmaintained
 * TunnelDigger generates config files that aren't compatible with the latest version of OpenVPN
