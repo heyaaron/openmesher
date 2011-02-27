@@ -1,2 +1,5 @@
 Patches are welcome.
-If you submit a patch, you are agreeing that you are the original author of the patch and you are giving up any ownership you may have to the code.
+If you submit a patch, you are agreeing that:
+* You are the original author of the patch
+* You are giving up any ownership you may have to the code to the project
+* You release the code under the MIT license listed in the 'LICENSE' file
