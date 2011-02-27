@@ -57,6 +57,16 @@ A list of port ranges to be used for the OpenVPN connections
     7000-7999
     1500-1701
 
+One-off Quagga Configs
+----------------------
+When you run openmesher.py, it will look for a folder named after the router and import statements from specially named files.
+For the moment, it's easiest to look at the source--but the following files are currently read for quagga:
+
+    zebra.main - Imported into the main config area of zebra
+    ripd.main - Imported into the main config area of ripd
+    ripd.interfaces - Added after all the auto-generated interfaces.  Can be used to add additional interfaces.
+    ripd.router - Imported into the 'router rip' context
+    ripd.acl - Imported after the auto-generated 'access-list' entries.
 
 Output
 ------
@@ -65,19 +75,22 @@ Typical output looks something like this:
     Loaded 64 /30s
     Generating Reverse DNS config...
     Generating Quagga config...
+    Importing ./main-office.router.cust.tld/ripd.router
     Generating OpenVPN config...
     Generating Shorewall config...
     Generating deb configs...
-    Base path: /tmp/openmesher-SPXfTD
+    Base path: /tmp/openmesher-WvxXAI
     Building package for router: main-office.router.cust.tld
     Building package for router: southern-office.router.cust.tld
     Building package for router: backup-office.router.cust.tld
     Building package for router: vancouver-office.router.cust.tld
     aaron@tycho:~/code/openmesher$ 
 
-If you go look in the 'Base path' folder (in this case /tmp/openmesher-SPXfTD), you will find a .deb file for each router.
+If you go look in the 'Base path' folder (in this case /tmp/openmesher-WvxXAI), you will find a .deb file for each router.
 You can scp those up to each router and use 'dpkg -i file.deb' to install them.
 Please be careful though, these files by default contain OpenVPN .conf and .key files as well as Quagga ripd.conf and zebra.conf files.
 If you already have an OpenVPN and/or Quagga conf, these files will be overwritten during the package install.
 Services will also be restarted.
+
+
 

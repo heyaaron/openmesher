@@ -3,6 +3,18 @@
 #import ConfigParser, datetime, glob, ipaddr, os, paramiko, probstat, shutil, subprocess, tempfile, IPy
 from datetime import datetime
 from StringIO import StringIO
+import os
+
+def readfile(fname):
+    fdata = ''
+    if os.path.exists(fname):
+        print 'Importing %s' %(fname)
+        rfh = open(fname)
+        for line in rfh:
+            fdata += line
+        rfh.close()    
+        return fdata
+    return None
 
 def makequagga(mesh):
     print 'Generating Quagga config...'
@@ -24,6 +36,7 @@ def makequagga(mesh):
         zebra.write('service terminal-length 0\n')
         zebra.write('ip forwarding\n')
         zebra.write('!\n')
+        zebra.write(readfile('./%s/zebra.main' %(router)))
         zebra.write('line vty\n')
         zebra.write('!\n')
         
@@ -42,6 +55,7 @@ def makequagga(mesh):
         ripd.write('service advanced-vty\n')
         ripd.write('service password-encryption\n')
         ripd.write('service terminal-length 0\n')
+        ripd.write(readfile('./%s/ripd.main' %(router)))
         ripd.write('!\n')
         
         for link in mesh.links[router]:
@@ -58,11 +72,16 @@ def makequagga(mesh):
             ripddl.write(' distribute-list p2pallow in %s\n' %(link.iface))
             ripddl.write(' distribute-list p2pallow out %s\n' %(link.iface))
         
+        ripd.write(readfile('./%s/ripd.interfaces' %(router)))
+        
         ripd.write('router rip\n')
         ripd.write(' timers basic 15 60 120\n')
         ripd.write(' redistribute kernel\n')
         ripd.write(' redistribute connected metric 1\n')
         ripd.write(' redistribute static\n')
+        
+        ripd.write(readfile('./%s/ripd.router' %(router)))
+        
         ripd.write(ripdnets.getvalue())
         ripd.write(ripddl.getvalue())
         ripd.write(' distance 1\n')
@@ -71,6 +90,7 @@ def makequagga(mesh):
         ripd.write('access-list p2pallow permit 10.0.0.0/8\n')
         ripd.write('access-list p2pallow permit 192.168.42.0/24\n')
         ripd.write('access-list p2pallow deny any\n')
+        ripd.write(readfile('./%s/quagga.acl' %(router)))
         ripd.write('!\n')
         ripd.write('line vty\n')
         ripd.write(' exec-timeout 0 0\n')
