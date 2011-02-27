@@ -8,5 +8,5 @@ setup(name='openmesher',
       author='Aaron C. de Bruyn',
       author_email='aaron@heyaaron.com',
       url='http://github.com/darkpixel/openmesher',
-      requires=['ipaddr', 'probstat', 'IPy],
+      requires=['ipaddr', 'probstat', 'IPy'],
 )
