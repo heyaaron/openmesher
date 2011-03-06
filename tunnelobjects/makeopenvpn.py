@@ -24,10 +24,10 @@ def makeopenvpn(mesh):
             linkconfig.write('user nobody\n')
             linkconfig.write('group nogroup\n')
             linkconfig.write('verb 3\n')
-            linkconfig.write('status-version 2\n')
             linkconfig.write('management 127.0.0.1 %s\n' %(link.port))
             linkconfig.write('secret %s\n' %(link.linkname() + '.key'))
-            linkconfig.write('status %s\n' %(link.linkname() + '.log'))
+#            linkconfig.write('status %s\n' %(link.linkname() + '.log'))
+#            linkconfig.write('status-version 2\n')
             #BUG: Put this back in after testing
             #linkconfig.write('daemon %s\n'%(link.linkname()))
             
