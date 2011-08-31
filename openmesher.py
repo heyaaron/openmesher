@@ -10,9 +10,16 @@ from tunnelobjects.makedebs import makedebs
 
 from makepackage import package_generator
 
-def slurpfile(fname):
+def slurpfile(fname, required = True):
     content = []
-    fh = open(fname)
+    try:
+        fh = open(fname)
+    except IOError as e:
+        print 'Unable to open file: %s' %(fname)
+        if required:
+            raise e
+        else:
+            return False
     rawcontent = fh.readlines()
     fh.close()
     
