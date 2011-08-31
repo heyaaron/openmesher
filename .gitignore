@@ -1,6 +1,5 @@
 *.pyc
 config
 router-list
-network-list
 *.deb
 rev.db
