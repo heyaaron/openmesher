@@ -31,7 +31,7 @@ def package_generator(config):
         process = subprocess.Popen(sCMD, shell=True, stdout=subprocess.PIPE, cwd=router_path)
         process.wait()
         if process.returncode != 0:
-            raise Exception('Package generation failed in %s' %(pkg_path))
+            raise Exception('Package generation failed in %s' %(base_path))
         
 #        print 'Connecting to %s' %(router)
 #        fh = open(base_path + '/' + router.lower().split('.')[0] + '.deb')
