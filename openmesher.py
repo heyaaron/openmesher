@@ -50,7 +50,10 @@ def nested_dict_merge(d1,d2):
 
 router_list = slurpfile('router-list')
 port_ranges = slurpfile('port-list')
-subnet_list = slurpfile('network-list')
+subnet_list = slurpfile('network-list', False)
+if not subnet_list:
+    print 'No network-list file, using default subnet 10.99.99.0./24'
+    subnet_list = '10.99.99.0/24'
 
 port_list = []
 for portrange in port_ranges:
