@@ -1,10 +1,17 @@
 TODO
 ----
 IPv6
-Deployment
+SSH Deployment
 Make modules more modular
-Support one-off configs for routers (module)
-Move config options to a .rc file or args
 Ability to specify a node as server-only or client-only (useful when you have a main office, or when one router is behind NAT)
 Customizable modules for each router (the corp router has a special ripd.conf, don't overwrite it, etc...)
+Don't use config files, use switches
+
+CLI Switches TODO
+-----------------
+4 - IPv4 support (default)
+6 - IPv6 support
+range - port range (multiple)
+net - vpn subnets (multiple)
+router - router name (multiple)
 
