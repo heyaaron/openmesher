@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import datetime, glob, os, shutil, subprocess, tempfile, logging
-import ipaddr, probstat, IPy, paramiko
+import ipaddr, probstat, IPy, paramiko, yapsy
 
 #RELEASE: Remove debug logging
 logging.basicConfig(level=logging.DEBUG)
@@ -65,31 +65,27 @@ def main():
         port_list += range(int(portstart),int(portstop))
 
 
-    simplePluginManager = PluginManager()
-    simplePluginManager.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
-
-    simplePluginManager.locatePlugins()
-    simplePluginManager.loadPlugins()
-
-    for plugin in simplePluginManager.getAllPlugins():
-        print 'Loaded plugin: %s' %(plugin.name)
-
+    pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
+    pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
+    pm.collectPlugins()
+    
     m = Mesh(router_list, port_list, subnet_list)
-
+    
     rd = makerevdns(m)
     dump_to_file('rev.db', rd, True)
 
-    files = {}
-    for plugin in simplePluginManager.getAllPlugins():
-        print plugin
-        print dir(plugin)
-        print plugin.plugin_object
+    files = None
+    for plugin in pm.getAllPlugins():
+        pm.activatePluginByName(plugin.name)
         p = plugin.plugin_object
+        p.process(m)
         print p
         print dir(p)
-        p.activate()
-        p.process(m)
-        files = nested_dict_merge(files,p.files())
+        if files:
+            files = nested_dict_merge(files, p.files())
+        else:
+            files = p.files()
+        
     
     qc = makequagga(m)
 #    ov = makeopenvpn(m)
