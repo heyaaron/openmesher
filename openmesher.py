@@ -3,7 +3,6 @@
 import datetime, glob, os, shutil, subprocess, tempfile, logging
 import ipaddr, probstat, IPy, paramiko, yapsy
 
-#RELEASE: Remove debug logging
 logging.basicConfig(level=logging.DEBUG)
 
 from yapsy.PluginManager import PluginManager
