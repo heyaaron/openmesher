@@ -1,10 +1,6 @@
 from yapsy.IPlugin import IPlugin
 
 class IOpenMesherPlugin(IPlugin):
-    def __init__(self):
-        self.is_activated = True
-        super(IPlugin, self).__init__()
-    
     def process(self, mesh):
         """ Begin plugin processing """
         return False
@@ -15,9 +11,6 @@ class IOpenMesherPlugin(IPlugin):
 
 
 class IOpenMesherPluginTest(IPlugin):
-    def __init__(self):
-        self.is_active = True
-    
     def process(self):
         """ Begin plugin processing """
         pass
