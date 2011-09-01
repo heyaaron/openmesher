@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import datetime, glob, os, shutil, subprocess, tempfile, logging
+import datetime, glob, os, shutil, subprocess, tempfile, logging, sys
 import ipaddr, probstat, IPy, paramiko, yapsy
 
 logging.basicConfig(level=logging.DEBUG)
@@ -49,7 +49,12 @@ def nested_dict_merge(d1,d2):
     return merged
 
 def main():
-    router_list = slurpfile('router-list')
+    try:
+        router_list = slurpfile('router-list')
+    except IOError as e:
+        print "You must create a router-list file containing one FQDN of each router per line"
+        sys.exit()
+    
     port_ranges = slurpfile('port-list')
     subnet_list = slurpfile('network-list', False)
     if not subnet_list:
