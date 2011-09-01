@@ -1,2 +1,4 @@
 IPy==0.75
-probstat==0.9
+Yapsy==1.8
+ipaddr==2.1.9
+http://sourceforge.net/projects/probstat/files/latest
