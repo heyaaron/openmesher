@@ -9,7 +9,6 @@ logging.basicConfig(level=logging.DEBUG)
 from yapsy.PluginManager import PluginManager
 from tunnelobjects import *
 from tunnelobjects.makerevdns import makerevdns
-from tunnelobjects.makeshorewall import makeshorewall
 from tunnelobjects.makedebs import makedebs
 
 from makepackage import package_generator
@@ -83,10 +82,7 @@ def main():
         else:
             files = p.files()
     
-    sw = makeshorewall(m)
     md = makedebs(m, ['openvpn', 'quagga', 'shorewall'], ['openvpn', 'quagga', 'shorewall'])
-    
-    files = nested_dict_merge(files, sw)
     files = nested_dict_merge(files, md)
     package_generator(files)
 
