@@ -6,6 +6,7 @@ Make modules more modular
 Ability to specify a node as server-only or client-only (useful when you have a main office, or when one router is behind NAT)
 Customizable modules for each router (the corp router has a special ripd.conf, don't overwrite it, etc...)
 Don't use config files, use switches
+Standardize on the file/folder case.  Half the code uses it exactly as it's typed into network-list, the other half lower cases it first.
 
 CLI Switches TODO
 -----------------
