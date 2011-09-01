@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import datetime, glob, os, shutil, subprocess, tempfile, logging, sys
+import datetime, glob, os, shutil, subprocess, tempfile, logging, sys, argparse
 import ipaddr, probstat, IPy, paramiko, yapsy
 
 logging.basicConfig(level=logging.DEBUG)
@@ -49,23 +49,24 @@ def nested_dict_merge(d1,d2):
     return merged
 
 def main():
-    try:
-        router_list = slurpfile('router-list')
-    except IOError as e:
-        print "You must create a router-list file containing one FQDN of each router per line"
-        sys.exit()
+    parser = argparse.ArgumentParser(description="Generate configuration files for an OpenVPN mesh")
+    parser.add_argument('-r', '--router', action='append')
+    parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
+    parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
-    port_ranges = slurpfile('port-list')
-    subnet_list = slurpfile('network-list', False)
-    if not subnet_list:
-        print 'No network-list file, using default subnet 10.99.99.0./24'
-        subnet_list = '10.99.99.0/24'
-
+    a = parser.parse_args()
+    
+    router_list = a.router
+    subnet_list = a.network
+    
     port_list = []
-    for portrange in port_ranges:
-        portstart, portstop = portrange.split('-')
-        port_list += range(int(portstart),int(portstop))
-
+    try:
+        for portrange in a.ports:
+            portstart, portstop = portrange.split('-')
+            port_list += range(int(portstart),int(portstop))
+    except ValueError as e:
+        print 'Invalid port range: %s' %(portrange)
+        raise e
 
     pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
     pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
