@@ -1,19 +1,16 @@
-from interfaces import IOpenMesherPlugin
+import logging, interfaces
 from StringIO import StringIO
-#from tunnelobjects import *
-import logging
 
-class OpenVPN(IOpenMesherPlugin):
+class OpenVPN(interfaces.IOpenMesherPlugin):
     def __init__(self):
-        self.openvpnfiles = {}
-        super(IOpenMesherPlugin, self).__init__()
+        self._openvpnfiles = {}
     
     def process(self, mesh):
         logging.debug('Generating OpenVPN config...')
         print "AAAGH!"
-        self.openvpnfiles = {}
-        for router in self.mesh.links:
-            self.openvpnfiles[router] = {}
+        self._openvpnfiles = {}
+        for router in mesh.links:
+            self._openvpnfiles[router] = {}
             
             for link in mesh.links[router]:
                 linkconfig = StringIO()
@@ -42,11 +39,10 @@ class OpenVPN(IOpenMesherPlugin):
                     linkconfig.write('remote %s\n' %(link.server.fqdn.lower()))
                     linkconfig.write('ifconfig %s %s\n' %(link.block[2], link.block[1]))
                 
-                self.openvpnfiles[router]['/openvpn/' + link.linkname() + '.conf'] = linkconfig.getvalue()
-                self.openvpnfiles[router]['/openvpn/' + link.linkname() + '.key'] = link.key
+                self._openvpnfiles[router]['/openvpn/' + link.linkname() + '.conf'] = linkconfig.getvalue()
+                self._openvpnfiles[router]['/openvpn/' + link.linkname() + '.key'] = link.key
     
     def files(self):
         """ Return a dictionary of routers containing a dictionary of filenames and contents """
-        print self.openvpnfiles
-        return self.openvpnfiles
+        return self._openvpnfiles
 
