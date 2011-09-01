@@ -79,8 +79,6 @@ def main():
         pm.activatePluginByName(plugin.name)
         p = plugin.plugin_object
         p.process(m)
-        print p
-        print dir(p)
         if files:
             files = nested_dict_merge(files, p.files())
         else:
