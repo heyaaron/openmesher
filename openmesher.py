@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-import datetime, glob, ipaddr, os, paramiko, probstat, shutil, subprocess, tempfile, IPy
+import datetime, glob, os, shutil, subprocess, tempfile, logging
+import ipaddr, probstat, IPy, paramiko, yapsy
+
+logging.basicConfig(level=logging.DEBUG)
+
+from yapsy.PluginManager import PluginManager
 from tunnelobjects import *
 from tunnelobjects.makerevdns import makerevdns
-from tunnelobjects.makequagga import makequagga
-from tunnelobjects.makeopenvpn import makeopenvpn
-from tunnelobjects.makeshorewall import makeshorewall
 from tunnelobjects.makedebs import makedebs
 
 from makepackage import package_generator
@@ -46,31 +48,41 @@ def nested_dict_merge(d1,d2):
             merged[k] = v
     return merged
 
-#new app start
+def main():
+    router_list = slurpfile('router-list')
+    port_ranges = slurpfile('port-list')
+    subnet_list = slurpfile('network-list', False)
+    if not subnet_list:
+        print 'No network-list file, using default subnet 10.99.99.0./24'
+        subnet_list = '10.99.99.0/24'
 
-router_list = slurpfile('router-list')
-port_ranges = slurpfile('port-list')
-subnet_list = slurpfile('network-list', False)
-if not subnet_list:
-    print 'No network-list file, using default subnet 10.99.99.0./24'
-    subnet_list = '10.99.99.0/24'
+    port_list = []
+    for portrange in port_ranges:
+        portstart, portstop = portrange.split('-')
+        port_list += range(int(portstart),int(portstop))
 
-port_list = []
-for portrange in port_ranges:
-    portstart, portstop = portrange.split('-')
-    port_list += range(int(portstart),int(portstop))
 
-m = Mesh(router_list, port_list, subnet_list)
+    pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
+    pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
+    pm.collectPlugins()
+    
+    m = Mesh(router_list, port_list, subnet_list)
+    
+    rd = makerevdns(m)
+    dump_to_file('rev.db', rd, True)
 
-rd = makerevdns(m)
-dump_to_file('rev.db', rd, True)
+    files = None
+    for plugin in pm.getAllPlugins():
+        pm.activatePluginByName(plugin.name)
+        p = plugin.plugin_object
+        p.process(m)
+        if files:
+            files = nested_dict_merge(files, p.files())
+        else:
+            files = p.files()
+    
+    package_generator(files)
 
-qc = makequagga(m)
-ov = makeopenvpn(m)
-sw = makeshorewall(m)
-md = makedebs(m, ['openvpn', 'quagga', 'shorewall'], ['openvpn', 'quagga', 'shorewall'])
-files = nested_dict_merge(qc,ov)
-files = nested_dict_merge(files,sw)
-files = nested_dict_merge(files,md)
-package_generator(files)
 
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,9 @@
+[Core]
+Name = Quagga
+Module = quagga
+
+[Documentation]
+Description = OpenMesher Quagga Plugin
+Author = Aaron C. de Bruyn
+Version = 0.1
+Website = http://heyaaron.com/
