@@ -1,0 +1,9 @@
+[Core]
+Name = MakeDEBs
+Module = makedebs
+
+[Documentation]
+Description = OpenMesher MakeDEBs Plugin
+Author = Aaron C. de Bruyn
+Version = 0.1
+Website = http://heyaaron.com/
