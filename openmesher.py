@@ -82,8 +82,6 @@ def main():
         else:
             files = p.files()
     
-    md = makedebs(m, ['openvpn', 'quagga', 'shorewall'], ['openvpn', 'quagga', 'shorewall'])
-    files = nested_dict_merge(files, md)
     package_generator(files)
 
 
