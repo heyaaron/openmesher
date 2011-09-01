@@ -3,7 +3,7 @@ from StringIO import StringIO
 #from tunnelobjects import *
 import logging
 
-class OpenVPNPlugin(IOpenMesherPlugin):
+class OpenVPN(IOpenMesherPlugin):
     def __init__(self):
         self.openvpnfiles = {}
         super(IOpenMesherPlugin, self).__init__()
