@@ -10,7 +10,6 @@ from yapsy.PluginManager import PluginManager
 from tunnelobjects import *
 from tunnelobjects.makerevdns import makerevdns
 from tunnelobjects.makequagga import makequagga
-from tunnelobjects.makeopenvpn import makeopenvpn
 from tunnelobjects.makeshorewall import makeshorewall
 from tunnelobjects.makedebs import makedebs
 
