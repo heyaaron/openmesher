@@ -37,14 +37,17 @@ def main():
     parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
     parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
-    a = parser.parse_args()
+    arg = parser.parse_args()
     
-    router_list = a.router
-    subnet_list = a.network
+    router_list = arg.router
+    subnet_list = arg.network
+    
+    if not router_list or len(router_list) < 2:
+        sys.exit('You can not mesh less than two routers')
     
     port_list = []
     try:
-        for portrange in a.ports:
+        for portrange in arg.ports:
             portstart, portstop = portrange.split('-')
             port_list += range(int(portstart),int(portstop))
     except ValueError as e:
