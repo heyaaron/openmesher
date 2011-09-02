@@ -12,23 +12,6 @@ from tunnelobjects.makedebs import makedebs
 
 from makepackage import package_generator
 
-def slurpfile(fname, required = True):
-    content = []
-    try:
-        fh = open(fname)
-    except IOError as e:
-        print 'Unable to open file: %s' %(fname)
-        if required:
-            raise e
-        else:
-            return False
-    rawcontent = fh.readlines()
-    fh.close()
-    
-    for line in rawcontent:
-        content.append(line.strip())
-    return content
-
 def dump_to_file(fname, data, clobber = False):
     if clobber and os.path.isfile(fname):
         os.unlink(fname)
