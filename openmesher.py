@@ -7,7 +7,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 from yapsy.PluginManager import PluginManager
 from tunnelobjects import *
-from tunnelobjects.makerevdns import makerevdns
 from tunnelobjects.makedebs import makedebs
 
 from makepackage import package_generator
@@ -73,8 +72,8 @@ def main():
     
     m = Mesh(router_list, port_list, subnet_list)
     
-    rd = makerevdns(m)
-    dump_to_file('rev.db', rd, True)
+#    rd = makerevdns(m)
+#    dump_to_file('rev.db', rd, True)
 
     files = None
     for plugin in pm.getAllPlugins():
