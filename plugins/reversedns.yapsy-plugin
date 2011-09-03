@@ -1,0 +1,9 @@
+[Core]
+Name = ReverseDNS
+Module = reversedns
+
+[Documentation]
+Description = OpenMesher Reverse DNS Plugin
+Author = Aaron C. de Bruyn
+Version = 0.1
+Website = http://heyaaron.com/
