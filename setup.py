@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='openmesher',
-      version='0.3',
+      version='0.4',
       description='OpenMesher: Router OpenVPN p2p Mesh Link Generator',
       author='Aaron C. de Bruyn',
       author_email='aaron@heyaaron.com',
