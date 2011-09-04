@@ -32,17 +32,18 @@ def nested_dict_merge(d1,d2):
 
 def main():
     parser = argparse.ArgumentParser(description="Generate configuration files for an OpenVPN mesh")
-    parser.add_argument('-r', '--router', action='append')
+    parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
+    parser.add_argument('-s', '--server', action='append', help='Adds a router that can only act as a server, not a client.')
+    parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
     parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
     parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
     arg = parser.parse_args()
-    
-    router_list = arg.router
-    subnet_list = arg.network
-    
-    if not router_list or len(router_list) < 2:
-        sys.exit('You can not mesh less than two routers')
+
+
+    from linkmesh import create_link_mesh
+    pprint.pprint(create_link_mesh(routers=arg.router, servers=arg.server, clients=arg.client))
+
     
     port_list = []
     try:
@@ -61,7 +62,7 @@ def main():
     
 #    rd = makerevdns(m)
 #    dump_to_file('rev.db', rd, True)
-
+    
     files = None
     for plugin in pm.getAllPlugins():
         pm.activatePluginByName(plugin.name)
