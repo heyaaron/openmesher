@@ -22,7 +22,6 @@ class Shorewall(interfaces.IOpenMesherPlugin):
                     rdns.write('%s\t\tPTR\t%s.\n' %(ip2.reverseName(), link.client.fqdn))
         for router in mesh.links:
             self._files[router] = {'/etc/mesh-reverse.db': rdns.getvalue()}
-        
         return True
     
     def files(self):
