@@ -4,8 +4,9 @@ from StringIO import StringIO
 class Quagga(interfaces.IOpenMesherPlugin):
     def __init__(self):
         self._files = {}
-    
-    def process(self, mesh, include_dirs = '', restart_services = ''):
+
+    #BUG: Need to fix the plugin arch so services can pass their config dirs to the package generator
+    def process(self, mesh, include_dirs = ['openvpn', 'quagga', 'shorewall'], restart_services = ['openvpn', 'quagga', 'shorewall']):
         logging.debug('Generating debs...')
         self._files = {}
         
