@@ -6,7 +6,7 @@ class Quagga(interfaces.IOpenMesherPlugin):
         self._files = {}
 
     #BUG: Need to fix the plugin arch so services can pass their config dirs to the package generator
-    def process(self, mesh, include_dirs = ['openvpn', 'quagga', 'shorewall'], restart_services = ['openvpn', 'quagga', 'shorewall']):
+    def process(self, mesh, include_dirs = ['openvpn', 'quagga', 'shorewall', 'mesh-reverse.db'], restart_services = ['openvpn', 'quagga', 'shorewall']):
         logging.debug('Generating debs...')
         self._files = {}
         
