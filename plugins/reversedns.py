@@ -20,7 +20,9 @@ class Shorewall(interfaces.IOpenMesherPlugin):
                     #BUG: Need to put iface name in rev dns
                     rdns.write('%s\t\tPTR\t%s.\n' %(ip1.reverseName(), link.server.fqdn))
                     rdns.write('%s\t\tPTR\t%s.\n' %(ip2.reverseName(), link.client.fqdn))
-        self._files['dnsserver'] = {'/etc/mesh-reverse.db': rdns.getvalue()}
+        for router in mesh.links:
+            self._files[router] = {'/etc/mesh-reverse.db': rdns.getvalue()}
+        
         return True
     
     def files(self):
