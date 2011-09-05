@@ -1,3 +1,5 @@
+import logging
+
 def create_link_mesh(routers = None, servers = None, clients = None):
     conns = {}
     
@@ -10,11 +12,13 @@ def create_link_mesh(routers = None, servers = None, clients = None):
             if clients:
                 for client in clients:
                     if not client in conns[server]:
+                        logging.debug('adding client %s to server %s' %(client, server))
                         conns[server].append(client)
             
             if routers:
                 for router in routers:
                     if not router in conns[server]:
+                        logging.debug('adding router %s to server %s' %(router, server))
                         conns[server].append(router)
     
     #Every router connects to all other routers and clients except itself
@@ -28,7 +32,14 @@ def create_link_mesh(routers = None, servers = None, clients = None):
                     continue
                 
                 if not clientrouter in conns[router]:
-                    conns[router].append(clientrouter)
+                    if conns.has_key(clientrouter):
+                        if router in conns[clientrouter]:
+                            logging.debug('reverse connection from clientrouter %s to router %s already exists' %(clientrouter, router))
+                            continue
+                        
+                        logging.debug('adding clientrouter %s to router %s' %(clientrouter, router))
+                        conns[router].append(clientrouter)
+            
             
             if clients:
                 for client in clients:
@@ -36,6 +47,7 @@ def create_link_mesh(routers = None, servers = None, clients = None):
                         continue
                     
                     if not client in conns[router]:
+                        logging.debug('adding client %s to router %s' %(client, router))
                         conns[router].append(client)
     
     #TODO: Need to also return a list of disconnected entities
