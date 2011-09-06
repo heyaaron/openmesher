@@ -29,7 +29,6 @@ Here is a list of where we need to improve:
 * Adding a new module should be easier
 * Generating unique one-off configs for a router is not well-supported yet
 * Customization of most options requires tweaking the source
-* Lots of hard-coded stuff.  We're slowly cleaning it up.
 
 
 Dependencies
