@@ -94,3 +94,11 @@ You can scp those up to each router and use 'dpkg -i file.deb' to install them.
 Please be careful though, these files by default contain OpenVPN .conf and .key files as well as Quagga ripd.conf and zebra.conf files.
 If you already have an OpenVPN and/or Quagga conf, these files will be overwritten during the package install.
 
+
+Developers and other geek-ilk
+=============================
+* Github rocks, fork it.
+* Patches are welcome
+* If you don't like the GitHub RSS feeds, you can follow @openmesher on twitter
+* No mailing lists, IRC channels, etc...  Not a big-enough project at the moment.
+
