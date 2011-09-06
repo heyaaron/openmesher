@@ -5,7 +5,7 @@ class OpenVPN(interfaces.IOpenMesherPlugin):
     def __init__(self):
         self._openvpnfiles = {}
     
-    def process(self, mesh):
+    def process(self, mesh, cliargs = None):
         logging.debug('Generating OpenVPN config...')
         self._openvpnfiles = {}
         for router in mesh.links:

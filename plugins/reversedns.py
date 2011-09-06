@@ -5,7 +5,7 @@ class Shorewall(interfaces.IOpenMesherPlugin):
     def __init__(self):
         self._files = {}
     
-    def process(self, mesh):
+    def process(self, mesh, cliargs = None):
         logging.debug('Generating DNS config...')
         self._files = {}
         

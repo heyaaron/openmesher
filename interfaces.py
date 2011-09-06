@@ -1,7 +1,7 @@
 from yapsy.IPlugin import IPlugin
 
 class IOpenMesherPlugin(IPlugin):
-    def process(self, mesh):
+    def process(self, mesh, cliargs = None):
         """ Begin plugin processing """
         return False
     
