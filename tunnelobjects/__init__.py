@@ -1,4 +1,4 @@
-import IPy, ipaddr, probstat, os, tempfile, subprocess
+import IPy, ipaddr, probstat, os, tempfile, subprocess, logging
 
 class Router():
     fqdn = ''
@@ -71,7 +71,9 @@ class Mesh():
     ports = []
     subnets = []
     
-    def __init__(self, routers, ports, subnets):
+    def __init__(self, routerlinks, ports, subnets):
+        #BUG: Rewrite mesh init to support Ports=None to randomly assign high-level ports
+        
         self.ports = ports
         for sub in subnets:
             blocks = ipaddr.IPNetwork(sub, strict=True).subnet(new_prefix=30)
@@ -81,28 +83,40 @@ class Mesh():
         print 'Loaded %s /30s' %(len(self.subnets))
         self.subnets.reverse()
         
-        for rtr in routers:
+        links_needed = None
+        #Create router objects for each router and client
+        for rtr in routerlinks:
+            logging.debug('Creating router object: %s' %(rtr))
             self.routers[rtr] = Router(rtr)
+            for rtrcli in routerlinks[rtr]:
+                logging.debug('Creating router (client): %s' %(rtrcli))
+                self.routers[rtrcli] = Router(rtrcli)
         
-        for combo in probstat.Combination(self.routers.keys(), 2):
-            newlink = Link(self.routers[combo[0]], self.routers[combo[1]], ports.pop(), self.iface_count, self.subnets.pop())
-            try:
-                if newlink not in self.links[combo[0]]:
-                    self.links[combo[0]].append(newlink)
-            except KeyError:
-                self.links[combo[0]] = [newlink]
-            
-            try:
-                if newlink not in self.links[combo[1]]:
-                    self.links[combo[1]].append(newlink)
-            except KeyError:
-                self.links[combo[1]] = [newlink]
-            
+        #For each router, create a link object, assign a server and client router object, assign ports and interface numbers along with a subnet.
+        for rtr in routerlinks:
+            for rtrclient in routerlinks[rtr]:
+                newlink = Link(self.routers[rtr], self.routers[rtrclient], ports.pop(), self.iface_count, self.subnets.pop())
+                
+                if not self.links.has_key(rtr):
+                    self.links[rtr] = []
+                self.links[rtr].append(newlink)
+                
+                if not self.links.has_key(rtrclient):
+                    self.links[rtrclient] = []
+                self.links[rtrclient].append(newlink)
             self.iface_count += 1
         
-        links_needed = 2^len(self.routers)
+        
+        links_needed = 0
+        for srv in self.links:
+            links_needed += len(self.links[srv])
+        logging.debug('%s links needed' %(links_needed))
+        
         subnets_available = len(self.subnets)
+        logging.debug('%s subnets available' %(subnets_available))
+        
         ports_available = len(self.ports)
+        logging.debug('%s ports available' %(ports_available))
         
         if links_needed > subnets_available:
             raise Exception('Not enough subnets available: %s needed, %s available' %(links_needed, subnets_available))
