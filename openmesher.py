@@ -32,17 +32,13 @@ def nested_dict_merge(d1,d2):
 
 def main():
     parser = argparse.ArgumentParser(description="Generate configuration files for an OpenVPN mesh")
-    parser.add_argument('-r', '--router', action='append')
+    parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
+    parser.add_argument('-s', '--server', action='append', help='Adds a router that can only act as a server, not a client.')
+    parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
     parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
     parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
     arg = parser.parse_args()
-    
-    router_list = arg.router
-    subnet_list = arg.network
-    
-    if not router_list or len(router_list) < 2:
-        sys.exit('You can not mesh less than two routers')
     
     port_list = []
     try:
@@ -52,16 +48,17 @@ def main():
     except ValueError as e:
         print 'Invalid port range: %s' %(portrange)
         raise e
-
+    
+    #Find and load plugins
     pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
     pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
     pm.collectPlugins()
     
-    m = Mesh(router_list, port_list, subnet_list)
+    from linkmesh import create_link_mesh
+    linkmesh = create_link_mesh(routers=arg.router, servers=arg.server, clients=arg.client)
     
-#    rd = makerevdns(m)
-#    dump_to_file('rev.db', rd, True)
-
+    m = Mesh(linkmesh, port_list, arg.network)
+    
     files = None
     for plugin in pm.getAllPlugins():
         pm.activatePluginByName(plugin.name)
@@ -73,7 +70,6 @@ def main():
             files = p.files()
     
     package_generator(files)
-
 
 if __name__ == "__main__":
     main()
