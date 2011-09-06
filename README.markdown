@@ -33,31 +33,8 @@ If you don't have 'pip', try the following on a Debian-based system:
     sudo apt-get install python-pip
 
 
-Example Config
-==============
-
-network-list
-------------
-A list of networks in CIDR format that can be used as IPs for p2p links.  Networks are chopped up into /30s automatically.
-    10.99.0.0/16
-    10.50.1.0/24
-
-
-router-list
------------
-A list of routers.
-    main-office.router.cust.tld
-    southern-office.router.cust.tld
-    backup-office.router.cust.tld
-    vancouver-office.router.cust.tld
-
-
-port-list
----------
-A list of port ranges to be used for the OpenVPN connections
-    7000-7999
-    1500-1701
-
+Example Configs
+===============
 
 One-off Quagga Configs
 ----------------------
@@ -70,29 +47,62 @@ For the moment, it's easiest to look at the source--but the following files are 
     ripd.router - Imported into the 'router rip' context
     ripd.acl - Imported after the auto-generated 'access-list' entries.
 
-
-Output
-------
-Typical output looks something like this:
-    aaron@tycho:~/code/openmesher$ ./openmesher.py 
+Example Run
+-----------
+(openmesher)08:06 /data/aaron/code/openmesher (hotfix/update-readme-for-v0.5)$ ./openmesher.py --router rtr1.cust.tld --server rtr2.cust.tld --client rtr3.cust.tld
+    DEBUG:root:PluginManager skips /usr/share/openmesher/plugins (not a directory)
+    DEBUG:root:PluginManager skips /data/aaron/code/openmesher/~/.openmesher/plugins (not a directory)
+    DEBUG:root:PluginManager walks into directory: /data/aaron/code/openmesher/plugins
+    DEBUG:root:PluginManager found a candidate: 
+    	/data/aaron/code/openmesher/plugins/makedebs.yapsy-plugin
+    DEBUG:root:PluginManager found a candidate: 
+    	/data/aaron/code/openmesher/plugins/openvpn.yapsy-plugin
+    DEBUG:root:PluginManager found a candidate: 
+    	/data/aaron/code/openmesher/plugins/shorewall.yapsy-plugin
+    DEBUG:root:PluginManager found a candidate: 
+    	/data/aaron/code/openmesher/plugins/quagga.yapsy-plugin
+    DEBUG:root:PluginManager found a candidate: 
+    	/data/aaron/code/openmesher/plugins/reversedns.yapsy-plugin
+    DEBUG:root:adding client rtr3.cust.tld to server rtr2.cust.tld
+    DEBUG:root:adding router rtr1.cust.tld to server rtr2.cust.tld
+    DEBUG:root:adding client rtr3.cust.tld to router rtr1.cust.tld
     Loaded 64 /30s
-    Generating Reverse DNS config...
-    Generating Quagga config...
-    Importing ./main-office.router.cust.tld/ripd.router
-    Generating OpenVPN config...
-    Generating Shorewall config...
-    Generating deb configs...
-    Base path: /tmp/openmesher-WvxXAI
-    Building package for router: main-office.router.cust.tld
-    Building package for router: southern-office.router.cust.tld
-    Building package for router: backup-office.router.cust.tld
-    Building package for router: vancouver-office.router.cust.tld
-    aaron@tycho:~/code/openmesher$ 
+    DEBUG:root:Creating router object: rtr2.cust.tld
+    DEBUG:root:Creating router (client): rtr3.cust.tld
+    DEBUG:root:Creating router (client): rtr1.cust.tld
+    DEBUG:root:Creating router object: rtr1.cust.tld
+    DEBUG:root:Creating router (client): rtr3.cust.tld
+    DEBUG:root:6 links needed
+    DEBUG:root:61 subnets available
+    DEBUG:root:996 ports available
+    DEBUG:root:Activating plugin: Default.MakeDEBs
+    DEBUG:root:Generating debs...
+    DEBUG:root:Activating plugin: Default.OpenVPN
+    DEBUG:root:Generating OpenVPN config...
+    DEBUG:root:Activating plugin: Default.Shorewall
+    DEBUG:root:Generating Shorewall config...
+    DEBUG:root:Activating plugin: Default.Quagga
+    DEBUG:root:Generating Quagga config...
+    WARNING:root:You did not provide a password or enable password for quagga, using the default 'secret123' for router rtr3.cust.tld
+    WARNING:root:You did not provide a password or enable password for zebra, using the default 'secret123' for router rtr3.cust.tld
+    WARNING:root:You did not provide a password or enable password for quagga, using the default 'secret123' for router rtr2.cust.tld
+    WARNING:root:You did not provide a password or enable password for zebra, using the default 'secret123' for router rtr2.cust.tld
+    WARNING:root:You did not provide a password or enable password for quagga, using the default 'secret123' for router rtr1.cust.tld
+    WARNING:root:You did not provide a password or enable password for zebra, using the default 'secret123' for router rtr1.cust.tld
+    DEBUG:root:Activating plugin: Default.ReverseDNS
+    DEBUG:root:Generating DNS config...
+    Base path: /tmp/openmesher-XTrKQk
+    Building package for router: rtr3.cust.tld
+    Building package for router: rtr2.cust.tld
+    Building package for router: rtr1.cust.tld
+    (openmesher)08:07 /data/aaron/code/openmesher (hotfix/update-readme-for-v0.5)$ 
+
 
 If you go look in the 'Base path' folder (in this case /tmp/openmesher-WvxXAI), you will find a .deb file for each router.
 You can SCP those up to each router and use 'dpkg -i file.deb' to install them.
-Please be careful though, these files by default contain OpenVPN .conf and .key files as well as Quagga ripd.conf and zebra.conf files.
+Please be careful though, these files by default contain OpenVPN .conf and .key files as well as Quagga ripd.conf and zebra.conf files.  Keep them safe.
 If you already have an OpenVPN and/or Quagga conf, these files will be overwritten during the package install.
+Also, OpenVPN, Quagga, and Shorewall will be restarted when installing the debs.
 
 
 Developers and other geek-ilk
