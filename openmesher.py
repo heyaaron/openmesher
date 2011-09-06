@@ -38,6 +38,10 @@ def main():
     parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
     parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
+    #BUG: This is hacky.  Plugins need to be able to be queried for their own list of args.
+    parser.add_argument('--password', action='store', help='Specify quagga password')
+    parser.add_argument('--enablepassword', action='store', help='Specify quagga enable password')
+    
     arg = parser.parse_args()
     
     port_list = []
@@ -63,7 +67,7 @@ def main():
     for plugin in pm.getAllPlugins():
         pm.activatePluginByName(plugin.name)
         p = plugin.plugin_object
-        p.process(m)
+        p.process(m, arg)
         if files:
             files = nested_dict_merge(files, p.files())
         else:
