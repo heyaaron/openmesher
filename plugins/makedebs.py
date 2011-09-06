@@ -49,19 +49,15 @@ class Quagga(interfaces.IOpenMesherPlugin):
             rules.write('dh_prep\n')
             rules.write('dh_installdirs\n')
             #BUG: Need to figure out which files need to be installed / services restarted from various plugins
-            if 'ezri' in router.lower():  #BUG: Stupid hard coding
-                rules.write('dh_install openvpn /etc/\n')
-            else:
-                #BUG: Need to find temp folders from other plugins
-                for include_dir in include_dirs:
-                    rules.write('dh_install %s /etc/\n' %(include_dir))
+            for include_dir in include_dirs:
+                rules.write('dh_install %s /etc/\n' %(include_dir))
             
             rules.write('dh_fixperms\n')
             rules.write('find -name "*.key" | xargs chmod 400\n')
             rules.write('dh_installdeb\n')
             rules.write('dh_gencontrol\n')
             rules.write('dh_md5sums\n')
-            rules.write('dh_builddeb --filename=%s.deb\n' %(mesh.routers[router].hostname.lower()))
+            rules.write('dh_builddeb --filename=%s.deb\n' %(mesh.routers[router].hostname))
             self._files[router]['/debian/rules'] = rules.getvalue()
             
             postinst = StringIO()
@@ -74,9 +70,7 @@ class Quagga(interfaces.IOpenMesherPlugin):
                 postinst.write('           /etc/init.d/%s restart\n' %(service))
                 postinst.write('        fi\n')
                 postinst.write('fi\n')
-            #BUG: Another stupid hard-coded hack so my home router doesn't restart OpenVPN when I install the packages
-            if not 'ezri' in router.lower():
-                self._files[router]['/debian/postinst'] = postinst.getvalue()
+            self._files[router]['/debian/postinst'] = postinst.getvalue()
         return True
     
     def files(self):
