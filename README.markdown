@@ -8,9 +8,9 @@ First off, I would like to say thank you to the developers of TunnelDigger.  I h
 
 Here is a list of improvements:
 
-* OpenMesher takes a simple list of routers and meshes them.  TunnelDigger requires you to explicitally specify each link between routers.
+* OpenMesher takes a simple list of routers and meshes them.  TunnelDigger requires you to explicitly specify each link between routers.
 * OpenMesher takes a list of netblocks (10.1.2.0/24, 10.1.15.0/28, or whatever) and automatically allocates /30s from each block for assignment to P2P interfaces.  TunnelDigger requires you to manually specify IPs on *each* side of the p2p link.
-* OpenMesher has support for plugins:  We currently support generating quagga, reverse DNS, OpenVPN, Shorewall, and deb config files for deployment from a deb.
+* OpenMesher has support for plugins:  We currently support generating Quagga, reverse DNS, OpenVPN, Shorewall, and deb config files for deployment from a deb.
 * Module -- Quagga: We can generate a ripd.conf and zebra.conf for each router
 * Module -- ReverseDNS: We can generate a BIND reverse DNS file for each IP used in the p2p /30 blocks.
 * Module -- OpenVPN: Obviously we generate the OpenVPN config files for the p2p links
@@ -62,7 +62,7 @@ A list of port ranges to be used for the OpenVPN connections
 One-off Quagga Configs
 ----------------------
 When you run openmesher.py, it will look for a folder named after the router and import statements from specially named files.
-For the moment, it's easiest to look at the source--but the following files are currently read for quagga:
+For the moment, it's easiest to look at the source--but the following files are currently read for Quagga:
 
     zebra.main - Imported into the main config area of zebra
     ripd.main - Imported into the main config area of ripd
@@ -90,7 +90,7 @@ Typical output looks something like this:
     aaron@tycho:~/code/openmesher$ 
 
 If you go look in the 'Base path' folder (in this case /tmp/openmesher-WvxXAI), you will find a .deb file for each router.
-You can scp those up to each router and use 'dpkg -i file.deb' to install them.
+You can SCP those up to each router and use 'dpkg -i file.deb' to install them.
 Please be careful though, these files by default contain OpenVPN .conf and .key files as well as Quagga ripd.conf and zebra.conf files.
 If you already have an OpenVPN and/or Quagga conf, these files will be overwritten during the package install.
 
