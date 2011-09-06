@@ -1,4 +1,4 @@
-OpenMesher v0.4
+OpenMesher v0.5
 ===============
 Copyright (c) 2010 Aaron C. de Bruyn <aaron@heyaaron.com>
 
@@ -22,13 +22,6 @@ Here is a list of improvements:
 * TunnelDigger generates config files that aren't compatible with the latest version of OpenVPN
 * TunnelDigger generates debs using an old format
 * TunnelDigger uses PKI where I think shared keys work just fine--although adding CA support is fairly easy and is planned for a future release.
-
-Here is a list of where we need to improve:
-
-* Code is not as modular as it should be
-* Adding a new module should be easier
-* Generating unique one-off configs for a router is not well-supported yet
-* Customization of most options requires tweaking the source
 
 
 Dependencies
