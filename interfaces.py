@@ -17,6 +17,15 @@ class IOpenMesherConfigPlugin(IPlugin):
         """ Begin plugin processing """
         pass
     
+    def setupargs(self, parser):
+        """
+            Plugins can add their own cli switches by calling 'parser.add_argument'.
+            parser: an argparse ArgumentParser object.
+            Function does not return anything.
+        """
+        #example:
+        #parser.add_argument('--myarg', action='store', help='Specify myarg')
+    
     def files(self):
         """ Return a dictionary of routers containing a dictionary of filenames and contents """
         return {}
