@@ -1,7 +1,7 @@
 import logging, interfaces, os, datetime
 from StringIO import StringIO
 
-class Quagga(interfaces.IOpenMesherPlugin):
+class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
     def __init__(self):
         self._files = {}
 

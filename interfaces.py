@@ -1,22 +1,6 @@
 from yapsy.IPlugin import IPlugin
 
-class IOpenMesherPlugin(IPlugin):
-    def process(self, mesh, cliargs = None):
-        """ Begin plugin processing """
-        return False
-    
-    def files(self):
-        """ Return a dictionary of routers containing a dictionary of filenames and contents """
-        return {}
-
-
-class IOpenMesherConfigPlugin(IPlugin):
-    """Interface for configuration plugins.  Accepts a mesh object, returns a dictionary of filenames and contents"""
-    
-    def process(self, mesh, **kwargs):
-        """ Begin plugin processing """
-        pass
-    
+class IOpenMesherBasePlugin(IPlugin):
     def setupargs(self, parser):
         """
             Plugins can add their own cli switches by calling 'parser.add_argument'.
@@ -25,6 +9,16 @@ class IOpenMesherConfigPlugin(IPlugin):
         """
         #example:
         #parser.add_argument('--myarg', action='store', help='Specify myarg')
+        pass
+    
+
+class IOpenMesherConfigPlugin(IOpenMesherBasePlugin):
+    """Interface for configuration plugins.  Accepts a mesh object, returns a dictionary of filenames and contents"""
+    
+    def process(self, mesh, **kwargs):
+        """ Begin plugin processing """
+        pass
+    
     
     def files(self):
         """ Return a dictionary of routers containing a dictionary of filenames and contents """
@@ -35,7 +29,7 @@ class IOpenMesherConfigPlugin(IPlugin):
         return ''
 
 
-class IOpenMesherPackagePlugin(IPlugin):
+class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
     """
         Interface for packaging plugins.  Accepts a mesh object and some basic
         packaging parameters and then returns a dictionary of routers containing
@@ -59,7 +53,7 @@ class IOpenMesherPackagePlugin(IPlugin):
     #TODO: Need to output the folder containing files that makedebs needs to collect
 
 
-class IOpenMesherDeployPlugin(IPlugin):
+class IOpenMesherDeployPlugin(IOpenMesherBasePlugin):
     """
         Interface for deployment plugins.  Accepts a mesh object and some basic
         deployment parameters and then performs the deployment, returning a dictionary
