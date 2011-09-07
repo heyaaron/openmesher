@@ -3,8 +3,8 @@ from StringIO import StringIO
 from datetime import datetime
 
 class Quagga(interfaces.IOpenMesherConfigPlugin):
-    def __init__(self):
-        self._quaggafiles = {}
+    def activate(self):
+        pass
     
     def _readfile(self, fname):
         fdata = ''

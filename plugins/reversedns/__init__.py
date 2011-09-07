@@ -2,8 +2,8 @@ import logging, interfaces, os, IPy
 from StringIO import StringIO
 
 class ReverseDNS(interfaces.IOpenMesherConfigPlugin):
-    def __init__(self):
-        self._files = {}
+    def activate(self):
+        pass
     
     def process(self, mesh, cliargs = None):
         logging.debug('Generating DNS config...')

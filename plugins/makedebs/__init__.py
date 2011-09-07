@@ -2,9 +2,9 @@ import logging, interfaces, os, datetime
 from StringIO import StringIO
 
 class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
-    def __init__(self):
-        self._files = {}
-
+    def activate(self):
+        pass
+    
     #BUG: Need to fix the plugin arch so services can pass their config dirs to the package generator
     def process(self, mesh, cliargs = None, include_dirs = ['openvpn', 'quagga', 'shorewall', 'mesh-reverse.db'], restart_services = ['openvpn', 'quagga', 'shorewall']):
         logging.debug('Generating debs...')

@@ -1,18 +1,12 @@
 import logging, interfaces, os
 from StringIO import StringIO
 from datetime import datetime
-from jinja2 import Environment, FileSystemLoader, ChoiceLoader
 
 
 class Shorewall(interfaces.IOpenMesherConfigPlugin):
-    def __init__(self):
-        env = Environment(loader=ChoiceLoader([
-                FileSystemLoader('~/.openmesher/'),
-                FileSystemLoader('%s/plugins/' %(os.getcwd())),
-            ]))
-        self._files = {}
-        self._interfaces_template = env.get_template('shorewall/interfaces.conf')
-        self._rules_template = env.get_template('shorewall/rules.conf')
+    def activate(self):
+        self._interfaces_template = self._env.get_template('shorewall/interfaces.conf')
+        self._rules_template = self._env.get_template('shorewall/rules.conf')
     
     def process(self, mesh, cliargs=None):
         logging.debug('Generating Shorewall config...')
