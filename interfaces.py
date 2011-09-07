@@ -43,6 +43,12 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
         packaging parameters and then returns a dictionary of routers containing
         a dictionary of files and deployment actions for those files
     """
+    def __init__(self):
+        self._files = {}
+        self._env = Environment(loader=ChoiceLoader([
+                FileSystemLoader('~/.openmesher/'),
+                FileSystemLoader('%s/plugins/' %(os.getcwd())),
+            ]))
     
     def process(self, mesh, pkgauthor = 'aaron@heyaaron.com', pkgversion = '1.0', **kwargs):
         """
@@ -56,7 +62,7 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
     
     def service_to_restart(self):
         """ Returns a string containing the name of a service to restart, such as 'openvpn'"""
-        return ''
+        return None
     
     #TODO: Need to output the folder containing files that makedebs needs to collect
 
