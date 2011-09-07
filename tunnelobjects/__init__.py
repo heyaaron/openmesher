@@ -80,7 +80,7 @@ class Mesh():
             for block in blocks:
                 self.subnets.append(block)
                 
-        print 'Loaded %s /30s' %(len(self.subnets))
+        logging.debug('Loaded %s /30s' %(len(self.subnets)))
         self.subnets.reverse()
         
         links_needed = None
