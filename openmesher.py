@@ -9,8 +9,6 @@ logging.basicConfig(level=logging.DEBUG)
 from yapsy.PluginManager import PluginManager
 from tunnelobjects import *
 
-from makepackage import package_generator
-
 def nested_dict_merge(d1,d2):
     merged = d1.copy()
     for k,v in d2.iteritems():
@@ -84,8 +82,7 @@ def main():
             files = nested_dict_merge(files, plugin.plugin_object.files())
         else:
             files = plugin.plugin_object.files()
-    
-    package_generator(files)
+
 
 if __name__ == "__main__":
     main()
