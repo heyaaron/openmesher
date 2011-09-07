@@ -8,7 +8,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 from yapsy.PluginManager import PluginManager
 from tunnelobjects import *
-from tunnelobjects.makedebs import makedebs
 
 from makepackage import package_generator
 
@@ -36,7 +35,7 @@ def main():
    })
     pm.collectPlugins()
     
-    parser = argparse.ArgumentParser(description="Generate configuration files for an OpenVPN mesh")
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="Generate configuration files for an OpenVPN mesh")
     parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
     parser.add_argument('-s', '--server', action='append', help='Adds a router that can only act as a server, not a client.')
     parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
