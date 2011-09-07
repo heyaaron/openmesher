@@ -49,7 +49,7 @@ For the moment, it's easiest to look at the source--but the following files are 
 
 Example Run
 -----------
-(openmesher)08:06 /data/aaron/code/openmesher (hotfix/update-readme-for-v0.5)$ ./openmesher.py --router rtr1.cust.tld --server rtr2.cust.tld --client rtr3.cust.tld
+    (openmesher)08:06 /data/aaron/code/openmesher (hotfix/update-readme-for-v0.5)$ ./openmesher.py --router rtr1.cust.tld --server rtr2.cust.tld --client rtr3.cust.tld
     DEBUG:root:PluginManager skips /usr/share/openmesher/plugins (not a directory)
     DEBUG:root:PluginManager skips /data/aaron/code/openmesher/~/.openmesher/plugins (not a directory)
     DEBUG:root:PluginManager walks into directory: /data/aaron/code/openmesher/plugins
