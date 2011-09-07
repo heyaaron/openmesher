@@ -38,12 +38,10 @@ def main():
     pm.setPluginInfoExtension('plugin')
     pm.setCategoriesFilter({
         'config': IOpenMesherConfigPlugin,
-        'oldplugins': IOpenMesherPlugin
+        'package': IOpenMesherPackagePlugin,
+        'deploy': IOpenMesherDeployPlugin,
    })
     pm.collectPlugins()
-    
-    for plugin in pm.getAllPlugins():
-        pm.activatePluginByName(plugin.name)
     
     parser = argparse.ArgumentParser(description="Generate configuration files for an OpenVPN mesh")
     parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
@@ -52,9 +50,9 @@ def main():
     parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
     parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
-    for plugin in pm.getPluginsOfCategory('config'):
-        p = plugin.plugin_object
-        p.setupargs(parser)
+    for plugin in pm.getAllPlugins():
+        pm.activatePluginByName(plugin.name)
+        plugin.plugin_object.setupargs(parser)
     
     arg = parser.parse_args()
     
@@ -67,21 +65,28 @@ def main():
         print 'Invalid port range: %s' %(portrange)
         raise e
     
-    
     from linkmesh import create_link_mesh
     linkmesh = create_link_mesh(routers=arg.router, servers=arg.server, clients=arg.client)
     
     m = Mesh(linkmesh, port_list, arg.network)
     
     files = None
-    for plugin in pm.getAllPlugins():
-        pm.activatePluginByName(plugin.name)
-        p = plugin.plugin_object
-        p.process(m, arg)
+    
+    # Run through config plugins
+    for plugin in pm.getPluginsOfCategory('config'):
+        plugin.plugin_object.process(m, arg)
         if files:
-            files = nested_dict_merge(files, p.files())
+            files = nested_dict_merge(files, plugin.plugin_object.files())
         else:
-            files = p.files()
+            files = plugin.plugin_object.files()
+    
+    # Run through packaging plugins
+    for plugin in pm.getPluginsOfCategory('package'):
+        plugin.plugin_object.process(m, arg)
+        if files:
+            files = nested_dict_merge(files, plugin.plugin_object.files())
+        else:
+            files = plugin.plugin_object.files()
     
     package_generator(files)
 
