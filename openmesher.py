@@ -49,6 +49,11 @@ def main():
     
     arg = parser.parse_args()
     
+    # Call activate() on all plugins so they prep themselves for use
+    for plugin in pm.getAllPlugins():
+        plugin.plugin_object.activate()
+    
+    
     port_list = []
     try:
         for portrange in arg.ports:
