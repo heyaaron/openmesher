@@ -35,7 +35,7 @@ class IOpenMesherConfigPlugin(IPlugin):
         return ''
 
 
-class IOpenMesherPackagingPlugin(IPlugin):
+class IOpenMesherPackagePlugin(IPlugin):
     """
         Interface for packaging plugins.  Accepts a mesh object and some basic
         packaging parameters and then returns a dictionary of routers containing
@@ -59,7 +59,7 @@ class IOpenMesherPackagingPlugin(IPlugin):
     #TODO: Need to output the folder containing files that makedebs needs to collect
 
 
-class IOpenMesherDeploymentPlugin(IPlugin):
+class IOpenMesherDeployPlugin(IPlugin):
     """
         Interface for deployment plugins.  Accepts a mesh object and some basic
         deployment parameters and then performs the deployment, returning a dictionary
