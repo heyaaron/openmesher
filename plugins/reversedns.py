@@ -1,7 +1,7 @@
 import logging, interfaces, os, IPy
 from StringIO import StringIO
 
-class Shorewall(interfaces.IOpenMesherPlugin):
+class ReverseDNS(interfaces.IOpenMesherPlugin):
     def __init__(self):
         self._files = {}
     
