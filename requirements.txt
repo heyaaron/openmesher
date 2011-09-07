@@ -2,3 +2,4 @@ IPy==0.75
 Yapsy==1.8
 ipaddr==2.1.9
 http://sourceforge.net/projects/probstat/files/latest
+Jinja2==2.6
