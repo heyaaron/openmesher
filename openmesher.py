@@ -12,13 +12,6 @@ from tunnelobjects.makedebs import makedebs
 
 from makepackage import package_generator
 
-def dump_to_file(fname, data, clobber = False):
-    if clobber and os.path.isfile(fname):
-        os.unlink(fname)
-    fh = open(fname, 'w')
-    fh.write(data)
-    fh.close()
-
 def nested_dict_merge(d1,d2):
     merged = d1.copy()
     for k,v in d2.iteritems():
