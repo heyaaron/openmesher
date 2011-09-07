@@ -1,7 +1,7 @@
 import logging, interfaces
 from StringIO import StringIO
 
-class OpenVPN(interfaces.IOpenMesherPlugin):
+class OpenVPN(interfaces.IOpenMesherConfigPlugin):
     def __init__(self):
         self._openvpnfiles = {}
     

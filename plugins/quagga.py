@@ -2,7 +2,7 @@ import logging, interfaces, os
 from StringIO import StringIO
 from datetime import datetime
 
-class Quagga(interfaces.IOpenMesherPlugin):
+class Quagga(interfaces.IOpenMesherConfigPlugin):
     def __init__(self):
         self._quaggafiles = {}
     
@@ -16,6 +16,10 @@ class Quagga(interfaces.IOpenMesherPlugin):
             rfh.close()    
             return fdata
         return None
+    
+    def setupargs(self, parser):
+        parser.add_argument('--password', action='store', help='Specify quagga password')
+        parser.add_argument('--enablepassword', action='store', help='Specify quagga enable password')
     
     def process(self, mesh, cliargs = None):
         logging.debug('Generating Quagga config...')

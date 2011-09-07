@@ -2,6 +2,7 @@
 
 import datetime, glob, os, shutil, subprocess, tempfile, logging, sys, argparse
 import ipaddr, probstat, IPy, paramiko, yapsy
+from interfaces import *
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -31,6 +32,17 @@ def nested_dict_merge(d1,d2):
     return merged
 
 def main():
+    #Find and load plugins
+    pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
+    pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
+    pm.setPluginInfoExtension('plugin')
+    pm.setCategoriesFilter({
+        'config': IOpenMesherConfigPlugin,
+        'package': IOpenMesherPackagePlugin,
+        'deploy': IOpenMesherDeployPlugin,
+   })
+    pm.collectPlugins()
+    
     parser = argparse.ArgumentParser(description="Generate configuration files for an OpenVPN mesh")
     parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
     parser.add_argument('-s', '--server', action='append', help='Adds a router that can only act as a server, not a client.')
@@ -38,9 +50,9 @@ def main():
     parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
     parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
-    #BUG: This is hacky.  Plugins need to be able to be queried for their own list of args.
-    parser.add_argument('--password', action='store', help='Specify quagga password')
-    parser.add_argument('--enablepassword', action='store', help='Specify quagga enable password')
+    for plugin in pm.getAllPlugins():
+        pm.activatePluginByName(plugin.name)
+        plugin.plugin_object.setupargs(parser)
     
     arg = parser.parse_args()
     
@@ -53,25 +65,28 @@ def main():
         print 'Invalid port range: %s' %(portrange)
         raise e
     
-    #Find and load plugins
-    pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
-    pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
-    pm.collectPlugins()
-    
     from linkmesh import create_link_mesh
     linkmesh = create_link_mesh(routers=arg.router, servers=arg.server, clients=arg.client)
     
     m = Mesh(linkmesh, port_list, arg.network)
     
     files = None
-    for plugin in pm.getAllPlugins():
-        pm.activatePluginByName(plugin.name)
-        p = plugin.plugin_object
-        p.process(m, arg)
+    
+    # Run through config plugins
+    for plugin in pm.getPluginsOfCategory('config'):
+        plugin.plugin_object.process(m, arg)
         if files:
-            files = nested_dict_merge(files, p.files())
+            files = nested_dict_merge(files, plugin.plugin_object.files())
         else:
-            files = p.files()
+            files = plugin.plugin_object.files()
+    
+    # Run through packaging plugins
+    for plugin in pm.getPluginsOfCategory('package'):
+        plugin.plugin_object.process(m, arg)
+        if files:
+            files = nested_dict_merge(files, plugin.plugin_object.files())
+        else:
+            files = plugin.plugin_object.files()
     
     package_generator(files)
 

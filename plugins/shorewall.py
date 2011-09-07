@@ -2,7 +2,7 @@ import logging, interfaces, os
 from StringIO import StringIO
 from datetime import datetime
 
-class Shorewall(interfaces.IOpenMesherPlugin):
+class Shorewall(interfaces.IOpenMesherConfigPlugin):
     def __init__(self):
         self._files = {}
     
