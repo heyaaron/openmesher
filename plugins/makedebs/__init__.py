@@ -99,22 +99,3 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
             if process.returncode != 0:
                 raise Exception('Package generation failed in %s.  Do you have debhelper and fakeroot installed?' %(base_path))
 
-
-
-
-#        print 'Connecting to %s' %(router)
-#        fh = open(base_path + '/' + router.lower().split('.')[0] + '.deb')
-#        ssh = paramiko.SSHClient()
-#        ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-#        ssh.connect(router.lower(), username='root')
-#        sftp = ssh.open_sftp()
-#        print 'Transferring deb...'
-#        remote_file = sftp.file('/root/%s.deb' %(router.lower().split('.')[0]), "wb")
-#        remote_file.set_pipelined(True)
-#        remote_file.write(fh.read())
-#        sftp.close()
-#        ssh.close()
-#        print 'Complete'
-
-
-
