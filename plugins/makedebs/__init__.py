@@ -24,10 +24,6 @@ def _mkdirs(path):
             pass
         else:
             raise
-    
-    def files(self):
-        """ Return a dictionary of routers containing a dictionary of filenames and contents """
-        return self._files
 
 
 class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
@@ -43,6 +39,10 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
 
     #BUG: Need to fix the plugin arch so services can pass their config dirs to the package generator
     def process(self, mesh, configPlugins = None, cliargs = None, include_dirs = ['openvpn', 'quagga', 'shorewall', 'mesh-reverse.db'], restart_services = ['openvpn', 'quagga', 'shorewall']):
+        base_path = tempfile.mkdtemp(prefix='openmesher-')
+        logging.info('Base path: %s' %(base_path))
+        _mkdirs(base_path)
+        
         logging.debug('Generating control files for package...')
         
         for router in mesh.routers:
@@ -74,11 +74,9 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
             self._files[router]['/debian/postinst'] = self._templates['makedebs/postinst.conf'].render(
                 restart = restart_services,
             )
-        logging.debug('Writing control files...')
+            self._packages[router] = '%s/%s.deb' %(base_path, mesh.routers[router].hostname.lower())
         
-        base_path = tempfile.mkdtemp(prefix='openmesher-')
-        logging.info('Base path: %s' %(base_path))
-        _mkdirs(base_path)
+        logging.debug('Writing control files...')
         
         dump_config_files(base_path, self._files)
         
