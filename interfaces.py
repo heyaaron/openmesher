@@ -100,8 +100,4 @@ class IOpenMesherDeployPlugin(IOpenMesherBasePlugin):
             Performs the actual deployment to a system.
         """
         pass
-    
-    def service_to_restart(self):
-        """ Returns a string containing the name of a service to restart, such as 'openvpn'"""
-        return ''
 
