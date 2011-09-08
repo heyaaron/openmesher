@@ -3,6 +3,8 @@ from StringIO import StringIO
 
 class ReverseDNS(interfaces.IOpenMesherConfigPlugin):
     def activate(self):
+        self._register('reversedns/reverse.conf')
+        
         self._reverse_template = self._env.get_template('reversedns/reverse.conf')
     
     def process(self, mesh, cliargs = None):
@@ -17,6 +19,6 @@ class ReverseDNS(interfaces.IOpenMesherConfigPlugin):
                     #BUG: fqdn might not be populated if just using hostnames.
                     #BUG: Need to allow reversing to alternate domain names if p2p routing block is private
                     #BUG: Need to put iface name in rev dns
-                    rdns.write(self._reverse_template.render(ip1=ip1, ip2=ip2, links=mesh.links[router]))
+                    rdns.write(self._templates['reversedns/reverse.conf'].render(ip1=ip1, ip2=ip2, links=mesh.links[router]))
                 self._files[router] = {'/mesh-reverse.db': rdns.getvalue()}
 

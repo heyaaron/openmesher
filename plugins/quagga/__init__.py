@@ -4,8 +4,8 @@ from datetime import datetime
 
 class Quagga(interfaces.IOpenMesherConfigPlugin):
     def activate(self):
-        self._zebra_template = self._env.get_template('quagga/zebra.conf')
-        self._ripd_template = self._env.get_template('quagga/ripd.conf')
+        self._register('quagga/zebra.conf')
+        self._register('quagga/ripd.conf')
     
     def setupargs(self, parser):
         parser.add_argument('--password', action='store', help='Specify quagga password')
@@ -32,14 +32,14 @@ class Quagga(interfaces.IOpenMesherConfigPlugin):
                 zpw = 'secret123'
                 zepw = 'secret123'
             
-            self._files[router]['/quagga/zebra.conf'] = self._zebra_template.render(
+            self._files[router]['/quagga/zebra.conf'] = self._templates['quagga/zebra.conf'].render(
                 gentime=configtime,
                 password=zpw,
                 enablepassword=zepw,
                 router=router,
             )
             
-            self._files[router]['/quagga/ripd.conf'] = self._ripd_template.render(
+            self._files[router]['/quagga/ripd.conf'] = self._templates['quagga/ripd.conf'].render(
                 gentime=configtime,
                 password=zpw,
                 enablepassword=zepw,

@@ -31,13 +31,14 @@ def _mkdirs(path):
         """ Return a dictionary of routers containing a dictionary of filenames and contents """
         return self._files
 
+
 class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
     def activate(self):
-        self._changelog_template = self._env.get_template('makedebs/changelog.conf')
-        self._compat_template = self._env.get_template('makedebs/compat.conf')
-        self._control_template = self._env.get_template('makedebs/control.conf')
-        self._rules_template = self._env.get_template('makedebs/rules.conf')
-        self._postinst_template = self._env.get_template('makedebs/postinst.conf')
+        self._register('makedebs/changelog.conf')
+        self._register('makedebs/compat.conf')
+        self._register('makedebs/control.conf')
+        self._register('makedebs/rules.conf')
+        self._register('makedebs/postinst.conf')
     
     def setupargs(self, parser):
         parser.add_argument('--dpkg-version', default='1.0', action='store', help='Version number of the deb to create')
@@ -52,27 +53,27 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
             
             #BUG: %z doesn't work for some dumb reason: http://www.aczoom.com/blog/ac/2007-02-24/strftime-in-python
             # changelog_date = datetime.datetime.strftime(datetime.datetime.utcnow(), '%A, %d %B %Y %H:%M:%S +%z')
-            self._files[router]['/debian/changelog'] = self._changelog_template.render(
+            self._files[router]['/debian/changelog'] = self._templates['makedebs/changelog.conf'].render(
                 hostname=mesh.routers[router].hostname.lower(),
                 package_version = cliargs.dpkg_version,
                 changelog_date = changelog_date,
             )
             
-            self._files[router]['/debian/compat'] = self._compat_template.render()
+            self._files[router]['/debian/compat'] = self._templates['makedebs/compat.conf'].render()
             
-            self._files[router]['/debian/control'] = self._control_template.render(
+            self._files[router]['/debian/control'] = self._templates['makedebs/control.conf'].render(
                 hostname = mesh.routers[router].hostname.lower(),
                 fqdn = mesh.routers[router].fqdn,
                 changelog_date = changelog_date,
             )
             
             #BUG: Need to figure out which files need to be installed / services restarted from various plugins
-            self._files[router]['/debian/rules'] = self._rules_template.render(
+            self._files[router]['/debian/rules'] = self._templates['makedebs/rules.conf'].render(
                 hostname = mesh.routers[router].hostname.lower(),
                 dirs = include_dirs,
             )
             
-            self._files[router]['/debian/postinst'] = self._postinst_template.render(
+            self._files[router]['/debian/postinst'] = self._templates['makedebs/postinst.conf'].render(
                 restart = restart_services,
             )
         logging.debug('Writing control files...')

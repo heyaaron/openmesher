@@ -17,12 +17,18 @@ class IOpenMesherBasePlugin(IPlugin):
 
 class IOpenMesherConfigPlugin(IOpenMesherBasePlugin):
     """Interface for configuration plugins.  Accepts a mesh object, returns a dictionary of filenames and contents"""
+    
     def __init__(self):
         self._files = {}
+        self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('~/.openmesher/'),
                 FileSystemLoader('%s/plugins/' %(os.getcwd())),
             ]))
+    
+    def _register(self, templatename):
+        """ Register a template and prepare it for use """
+        self._templates[templatename] = self._env.get_template(templatename)
     
     def process(self, mesh, **kwargs):
         """ Begin plugin processing """
@@ -45,10 +51,15 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
     """
     def __init__(self):
         self._files = {}
+        self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('~/.openmesher/'),
                 FileSystemLoader('%s/plugins/' %(os.getcwd())),
             ]))
+    
+    def _register(self, templatename):
+        """ Register a template and prepare it for use """
+        self._templates[templatename] = self._env.get_template(templatename)
     
     def process(self, mesh, pkgauthor = 'aaron@heyaaron.com', pkgversion = '1.0', **kwargs):
         """
