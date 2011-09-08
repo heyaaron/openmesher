@@ -55,8 +55,10 @@ def main():
     files = None
     
     # Run through config plugins
+    configPlugins = []
     for plugin in pm.getPluginsOfCategory('config'):
         plugin.plugin_object.process(m, arg)
+        configPlugins.append(plugin.plugin_object)
         if files:
             files = nested_dict_merge(files, plugin.plugin_object.files())
         else:
@@ -64,7 +66,7 @@ def main():
     
     # Run through packaging plugins
     for plugin in pm.getPluginsOfCategory('package'):
-        plugin.plugin_object.process(m, arg)
+        plugin.plugin_object.process(m, configPlugins=configPlugins, cliargs=arg)
         if files:
             files = nested_dict_merge(files, plugin.plugin_object.files())
         else:
