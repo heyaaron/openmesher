@@ -26,6 +26,7 @@ def main():
     parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
     parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
     parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
+    parser.add_argument('-v', '--verbose', action='append')
     
     for plugin in pm.getAllPlugins():
         pm.activatePluginByName(plugin.name)
@@ -74,4 +75,6 @@ def main():
 
 
 if __name__ == "__main__":
+    #TODO: Set debug level based on -vvv
+    logging.basicConfig(level=logging.DEBUG)
     main()
