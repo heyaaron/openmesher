@@ -51,6 +51,7 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
     """
     def __init__(self):
         self._files = {}
+        self._packages = {}
         self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('~/.openmesher/'),
@@ -67,9 +68,9 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
         """
         pass
     
-    def files(self):
-        """ Return a dictionary of routers containing a dictionary of filenames and contents """
-        return {}
+    def packages(self):
+        """ Return a dictionary of routers containing an array of filenames to deploy """
+        return self._packages
     
     def service_to_restart(self):
         """ Returns a string containing the name of a service to restart, such as 'openvpn'"""
@@ -95,7 +96,7 @@ class IOpenMesherDeployPlugin(IOpenMesherBasePlugin):
             Is the plugin able to reboot the server?
         """
     
-    def deploy(self, deploydict, stoponfailure=True):
+    def deploy(self, deploy_dict, cliargs, stoponfailure=False):
         """
             Performs the actual deployment to a system.
         """
