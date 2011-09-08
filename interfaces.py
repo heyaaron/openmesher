@@ -1,4 +1,7 @@
+import os
 from yapsy.IPlugin import IPlugin
+from jinja2 import Environment, FileSystemLoader, ChoiceLoader
+
 
 class IOpenMesherBasePlugin(IPlugin):
     def setupargs(self, parser):
@@ -10,19 +13,24 @@ class IOpenMesherBasePlugin(IPlugin):
         #example:
         #parser.add_argument('--myarg', action='store', help='Specify myarg')
         pass
-    
+
 
 class IOpenMesherConfigPlugin(IOpenMesherBasePlugin):
     """Interface for configuration plugins.  Accepts a mesh object, returns a dictionary of filenames and contents"""
+    def __init__(self):
+        self._files = {}
+        self._env = Environment(loader=ChoiceLoader([
+                FileSystemLoader('~/.openmesher/'),
+                FileSystemLoader('%s/plugins/' %(os.getcwd())),
+            ]))
     
     def process(self, mesh, **kwargs):
         """ Begin plugin processing """
         pass
     
-    
     def files(self):
         """ Return a dictionary of routers containing a dictionary of filenames and contents """
-        return {}
+        return self._files
     
     def service_to_restart(self):
         """ Returns a string containing the name of a service to restart, such as 'openvpn'"""
@@ -35,6 +43,12 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
         packaging parameters and then returns a dictionary of routers containing
         a dictionary of files and deployment actions for those files
     """
+    def __init__(self):
+        self._files = {}
+        self._env = Environment(loader=ChoiceLoader([
+                FileSystemLoader('~/.openmesher/'),
+                FileSystemLoader('%s/plugins/' %(os.getcwd())),
+            ]))
     
     def process(self, mesh, pkgauthor = 'aaron@heyaaron.com', pkgversion = '1.0', **kwargs):
         """
@@ -48,7 +62,7 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
     
     def service_to_restart(self):
         """ Returns a string containing the name of a service to restart, such as 'openvpn'"""
-        return ''
+        return None
     
     #TODO: Need to output the folder containing files that makedebs needs to collect
 
