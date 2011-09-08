@@ -1,7 +1,5 @@
 import logging, interfaces, os, datetime, sys
 import glob, tempfile, subprocess
-
-from StringIO import StringIO
 from lib import nested_dict_merge
 
 def dump_config_files(base_path, files_dict):

@@ -1,5 +1,4 @@
 import logging, interfaces, os
-from StringIO import StringIO
 from datetime import datetime
 
 class Quagga(interfaces.IOpenMesherConfigPlugin):

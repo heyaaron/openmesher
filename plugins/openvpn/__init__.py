@@ -1,5 +1,4 @@
 import logging, interfaces
-from StringIO import StringIO
 from jinja2 import Environment, FileSystemLoader, ChoiceLoader
 
 class OpenVPN(interfaces.IOpenMesherConfigPlugin):
