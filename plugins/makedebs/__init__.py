@@ -1,7 +1,5 @@
 import logging, interfaces, os, datetime, sys
 import glob, tempfile, subprocess
-
-from StringIO import StringIO
 from lib import nested_dict_merge
 
 def dump_config_files(base_path, files_dict):
@@ -26,10 +24,6 @@ def _mkdirs(path):
             pass
         else:
             raise
-    
-    def files(self):
-        """ Return a dictionary of routers containing a dictionary of filenames and contents """
-        return self._files
 
 
 class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
@@ -45,6 +39,10 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
 
     #BUG: Need to fix the plugin arch so services can pass their config dirs to the package generator
     def process(self, mesh, configPlugins = None, cliargs = None, include_dirs = ['openvpn', 'quagga', 'shorewall', 'mesh-reverse.db'], restart_services = ['openvpn', 'quagga', 'shorewall']):
+        base_path = tempfile.mkdtemp(prefix='openmesher-')
+        logging.info('Base path: %s' %(base_path))
+        _mkdirs(base_path)
+        
         logging.debug('Generating control files for package...')
         
         for router in mesh.routers:
@@ -76,11 +74,9 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
             self._files[router]['/debian/postinst'] = self._templates['makedebs/postinst.conf'].render(
                 restart = restart_services,
             )
-        logging.debug('Writing control files...')
+            self._packages[router] = '%s/%s.deb' %(base_path, mesh.routers[router].hostname.lower())
         
-        base_path = tempfile.mkdtemp(prefix='openmesher-')
-        logging.info('Base path: %s' %(base_path))
-        _mkdirs(base_path)
+        logging.debug('Writing control files...')
         
         dump_config_files(base_path, self._files)
         
@@ -98,23 +94,4 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
             process.wait()
             if process.returncode != 0:
                 raise Exception('Package generation failed in %s.  Do you have debhelper and fakeroot installed?' %(base_path))
-
-
-
-
-#        print 'Connecting to %s' %(router)
-#        fh = open(base_path + '/' + router.lower().split('.')[0] + '.deb')
-#        ssh = paramiko.SSHClient()
-#        ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-#        ssh.connect(router.lower(), username='root')
-#        sftp = ssh.open_sftp()
-#        print 'Transferring deb...'
-#        remote_file = sftp.file('/root/%s.deb' %(router.lower().split('.')[0]), "wb")
-#        remote_file.set_pipelined(True)
-#        remote_file.write(fh.read())
-#        sftp.close()
-#        ssh.close()
-#        print 'Complete'
-
-
 

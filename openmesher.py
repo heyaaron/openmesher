@@ -66,12 +66,16 @@ def main():
             files = plugin.plugin_object.files()
     
     # Run through packaging plugins
+    packagePlugins = []
     for plugin in pm.getPluginsOfCategory('package'):
         plugin.plugin_object.process(m, configPlugins=configPlugins, cliargs=arg)
-        if files:
-            files = nested_dict_merge(files, plugin.plugin_object.files())
-        else:
-            files = plugin.plugin_object.files()
+        packagePlugins.append(plugin.plugin_object)
+    
+    # Run through deployment plugins
+    for plugin in pm.getPluginsOfCategory('deploy'):
+        plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
+
+
 
 
 if __name__ == "__main__":

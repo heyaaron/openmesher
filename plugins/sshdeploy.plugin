@@ -1,0 +1,9 @@
+[Core]
+Name = SSHDeploy
+Module = sshdeploy
+
+[Documentation]
+Description = OpenMesher SSH Deployment Plugin
+Author = Aaron C. de Bruyn
+Version = 0.1
+Website = http://heyaaron.com/
