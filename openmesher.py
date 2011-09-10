@@ -20,7 +20,7 @@ def main():
    })
     pm.collectPlugins()
     
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="Generate configuration files for an OpenVPN mesh")
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="Generate, package, and deploy an OpenVPN mesh")
     parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
     parser.add_argument('-s', '--server', action='append', help='Adds a router that can only act as a server, not a client.')
     parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
@@ -34,10 +34,17 @@ def main():
     
     arg = parser.parse_args()
     
+    router_count = arg.router or 0
+    server_count = arg.server or 0
+    client_count = arg.server or 0
+    
+    if router_count + server_count + client_count < 2:
+        parser.print_help()
+        raise ValueError('You must have a combination of two or more routers, servers, and clients')
+
     # Call activate() on all plugins so they prep themselves for use
     for plugin in pm.getAllPlugins():
         plugin.plugin_object.activate()
-    
     
     port_list = []
     try:
