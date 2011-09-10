@@ -31,7 +31,7 @@ def nested_dict_merge(d1,d2):
     return merged
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate configuration files for an OpenVPN mesh")
+    parser = argparse.ArgumentParser(description="Generate, package, and deploy an OpenVPN mesh")
     parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
     parser.add_argument('-s', '--server', action='append', help='Adds a router that can only act as a server, not a client.')
     parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
@@ -43,6 +43,14 @@ def main():
     parser.add_argument('--enablepassword', action='store', help='Specify quagga enable password')
     
     arg = parser.parse_args()
+    
+    router_count = arg.router or 0
+    server_count = arg.server or 0
+    client_count = arg.server or 0
+    
+    if router_count + server_count + client_count < 2:
+        parser.print_help()
+        raise ValueError('You must have a combination of two or more routers, servers, and clients')
     
     port_list = []
     try:
