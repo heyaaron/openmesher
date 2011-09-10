@@ -3,10 +3,10 @@
 from distutils.core import setup
 
 setup(name='openmesher',
-      version='0.5',
+      version='0.6',
       description='OpenMesher: Router OpenVPN p2p Mesh Link Generator',
       author='Aaron C. de Bruyn',
       author_email='aaron@heyaaron.com',
       url='http://github.com/darkpixel/openmesher',
-      requires=['ipaddr', 'probstat', 'IPy'],
+      requires=['ipaddr', 'probstat', 'IPy', 'Yapsy', 'Jinja2'],
 )
