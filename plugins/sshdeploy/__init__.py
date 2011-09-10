@@ -6,6 +6,7 @@ import paramiko
 
 class SSHDeploy(IOpenMesherDeployPlugin):
     def setupargs(self, parser):
+        parser.add_argument('--deploy', action='store_true', help='Attempt to deploy the files to the routers (will not install or restart services)')
         parser.add_argument('--deploy-username', action='store', help='Username to use when deploying via SSH')
         parser.add_argument('--deploy-dir', action='store', help='Path to upload files')
     
@@ -13,6 +14,9 @@ class SSHDeploy(IOpenMesherDeployPlugin):
         pass
     
     def deploy(self, packagePlugins = None, cliargs = None, stoponfailure = False):
+        if not cliargs.deploy:
+            return
+        
         username = cliargs.deploy_username or 'root'
         deploydir = cliargs.deploy_dir or '/root/'
         logging.info('Assembling files for deployment...')

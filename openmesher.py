@@ -34,11 +34,17 @@ def main():
     
     arg = parser.parse_args()
     
-    router_count = arg.router or 0
-    server_count = arg.server or 0
-    client_count = arg.server or 0
+    total_count = 0
+    if arg.router:
+        total_count += len(arg.router)
     
-    if router_count + server_count + client_count < 2:
+    if arg.server:
+        total_count += len(arg.server)
+    
+    if arg.client:
+        total_count += len(arg.client)
+    
+    if total_count < 2:
         parser.print_help()
         raise ValueError('You must have a combination of two or more routers, servers, and clients')
 
