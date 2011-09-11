@@ -12,7 +12,7 @@ class OpenVPN(interfaces.IOpenMesherConfigPlugin):
             self._files[router] = {}
             
             for link in mesh.links[router]:
-                self._files[router]['/openvpn/%s.conf' %(link.linkname())] = self._templates['openvpn/openvpn.conf'].render(link=link)
+                self._files[router]['/openvpn/%s.conf' %(link.linkname())] = self._templates['openvpn/openvpn.conf'].render(link=link, isserver=link.isServer(router))
                 self._files[router]['/openvpn/%s.key' %(link.linkname())] = link.key
     
     def files(self):
