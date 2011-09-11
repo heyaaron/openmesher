@@ -1,4 +1,4 @@
-OpenMesher v0.5
+OpenMesher v0.6
 ===============
 Copyright (c) 2010 Aaron C. de Bruyn <aaron@heyaaron.com>
 
@@ -32,23 +32,11 @@ An easy way to install the dependencies is:
 If you don't have 'pip', try the following on a Debian-based system:
     sudo apt-get install python-pip
 
-
-Example Configs
-===============
-
-One-off Quagga Configs
-----------------------
-When you run openmesher.py, it will look for a folder named after the router and import statements from specially named files.
-For the moment, it's easiest to look at the source--but the following files are currently read for Quagga:
-
-    zebra.main - Imported into the main config area of zebra
-    ripd.main - Imported into the main config area of ripd
-    ripd.interfaces - Added after all the auto-generated interfaces.  Can be used to add additional interfaces.
-    ripd.router - Imported into the 'router rip' context
-    ripd.acl - Imported after the auto-generated 'access-list' entries.
-
 Example Run
------------
+===========
+This is a rough idea of what you should see as output when you run openmesher:
+
+
     (openmesher)08:06 /data/aaron/code/openmesher (hotfix/update-readme-for-v0.5)$ ./openmesher.py --router rtr1.cust.tld --server rtr2.cust.tld --client rtr3.cust.tld
     DEBUG:root:PluginManager skips /usr/share/openmesher/plugins (not a directory)
     DEBUG:root:PluginManager skips /data/aaron/code/openmesher/~/.openmesher/plugins (not a directory)
@@ -91,7 +79,7 @@ Example Run
     WARNING:root:You did not provide a password or enable password for zebra, using the default 'secret123' for router rtr1.cust.tld
     DEBUG:root:Activating plugin: Default.ReverseDNS
     DEBUG:root:Generating DNS config...
-    Base path: /tmp/openmesher-XTrKQk
+    Base path: /tmp/openmesher-WvxXAI
     Building package for router: rtr3.cust.tld
     Building package for router: rtr2.cust.tld
     Building package for router: rtr1.cust.tld
@@ -100,9 +88,13 @@ Example Run
 
 If you go look in the 'Base path' folder (in this case /tmp/openmesher-WvxXAI), you will find a .deb file for each router.
 You can SCP those up to each router and use 'dpkg -i file.deb' to install them.
-Please be careful though, these files by default contain OpenVPN .conf and .key files as well as Quagga ripd.conf and zebra.conf files.  Keep them safe.
+Please be careful though, thee deb files contain OpenVPN .conf and .key files as well as Quagga ripd.conf and zebra.conf files.  Keep them safe.
+
 If you already have an OpenVPN and/or Quagga conf, these files will be overwritten during the package install.
 Also, OpenVPN, Quagga, and Shorewall will be restarted when installing the debs.
+
+If you specify the --deploy switch, OpenMesher will attempt to copy the generated debs to the routers.
+OpenMesher WILL NOT attempt to auto-install the packages or restart services.  Maybe eventually, but not now.
 
 
 Developers and other geek-ilk
