@@ -75,9 +75,12 @@ class Mesh():
         #BUG: Rewrite mesh init to support Ports=None to randomly assign high-level ports
         
         self.ports = ports
+        logging.debug('Subnets available: %s' %(subnets))
         for sub in subnets:
+            logging.debug('Processing subnet: %s' %(sub))
             blocks = ipaddr.IPNetwork(sub, strict=True).subnet(new_prefix=30)
             for block in blocks:
+                logging.debug('P2P block available: %s' %(block))
                 self.subnets.append(block)
                 
         logging.debug('Loaded %s /30s' %(len(self.subnets)))
