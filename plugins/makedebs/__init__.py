@@ -12,7 +12,7 @@ def dump_config_files(base_path, files_dict):
                     fh = open(cfgfile_path, 'w')
                     fh.write(files_dict[router][cfgfile])
                     fh.close()
-                    if fname == 'rules':
+                    if fname == 'rules' or fname == 'postinst':
                         #BUG: Hack to make dpkg rules file executable
                         os.chmod(cfgfile_path, 0744)
 

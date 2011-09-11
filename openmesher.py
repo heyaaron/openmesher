@@ -21,12 +21,16 @@ def main():
     pm.collectPlugins()
     
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="Generate, package, and deploy an OpenVPN mesh")
+    parser.add_argument('-v', '--verbose', action='append')
     parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
     parser.add_argument('-s', '--server', action='append', help='Adds a router that can only act as a server, not a client.')
     parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
-    parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
-    parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
-    parser.add_argument('-v', '--verbose', action='append')
+    
+    #BUG: Stupid argparse appends your switches to the default.
+    parser.add_argument('-p', '--ports', action='append', required=True)
+    parser.add_argument('-n', '--network', action='append', required=True)
+#    parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
+#    parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
     for plugin in pm.getAllPlugins():
         pm.activatePluginByName(plugin.name)
@@ -87,8 +91,9 @@ def main():
     # Run through deployment plugins
     for plugin in pm.getPluginsOfCategory('deploy'):
         plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
-
-
+    
+    
+    logging.info('OpenMesher complete')
 
 
 if __name__ == "__main__":

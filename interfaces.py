@@ -22,7 +22,7 @@ class IOpenMesherConfigPlugin(IOpenMesherBasePlugin):
         self._files = {}
         self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
-                FileSystemLoader('~/.openmesher/'),
+                FileSystemLoader('%s/.openmesher/' %(os.path.expanduser('~'))),
                 FileSystemLoader('%s/plugins/' %(os.getcwd())),
             ]))
     

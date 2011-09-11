@@ -31,10 +31,16 @@ class Quagga(interfaces.IOpenMesherConfigPlugin):
                 zpw = 'secret123'
                 zepw = 'secret123'
             
+            if '.' in str(router):
+                hostname = str(router).split('.')[0]
+            else:
+                self.hostname = str(router)
+            
             self._files[router]['/quagga/zebra.conf'] = self._templates['quagga/zebra.conf'].render(
                 gentime=configtime,
                 password=zpw,
                 enablepassword=zepw,
+                hostname=hostname,
                 router=router,
             )
             
@@ -42,6 +48,7 @@ class Quagga(interfaces.IOpenMesherConfigPlugin):
                 gentime=configtime,
                 password=zpw,
                 enablepassword=zepw,
+                hostname=hostname,
                 router=router,
                 links=mesh.links[router]
             )
