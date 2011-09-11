@@ -95,6 +95,7 @@ class Mesh():
         #For each router, create a link object, assign a server and client router object, assign ports and interface numbers along with a subnet.
         for rtr in routerlinks:
             for rtrclient in routerlinks[rtr]:
+                logging.debug('Creating new link from %s to %s with iface %s' %(rtr, rtrclient, self.iface_count))
                 newlink = Link(self.routers[rtr], self.routers[rtrclient], ports.pop(), self.iface_count, self.subnets.pop())
                 
                 if not self.links.has_key(rtr):
@@ -104,8 +105,7 @@ class Mesh():
                 if not self.links.has_key(rtrclient):
                     self.links[rtrclient] = []
                 self.links[rtrclient].append(newlink)
-            self.iface_count += 1
-        
+                self.iface_count += 1
         
         links_needed = 0
         for srv in self.links:
