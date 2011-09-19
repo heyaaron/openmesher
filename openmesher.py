@@ -45,7 +45,7 @@ def main():
         if len(arg.verbose) == 1:
             l.setLevel(logging.INFO)
             print 'Info'
-        if len(arg.verbose) == 2:
+        if len(arg.verbose) >= 2:
             l.setLevel(logging.DEBUG)
             print 'Debug'
     
