@@ -120,6 +120,7 @@ class Mesh():
                 self.links[rtrclient].append(newlink)
                 self.iface_count += 1
         
+        #BUG: Wow--this is screwed up.  Bad math, requires too many ports, etc...
         links_needed = 0
         for srv in self.links:
             links_needed += len(self.links[srv])
