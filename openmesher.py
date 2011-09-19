@@ -20,8 +20,7 @@ def main():
    })
     pm.collectPlugins()
     
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="Generate, package, and deploy an OpenVPN mesh")
-    parser.add_argument('-v', '--verbose', action='append')
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="Configure, package, and deploy an OpenVPN mesh")
     parser.add_argument('-r', '--router', action='append', help='Adds a router that can be a client and server')
     parser.add_argument('-s', '--server', action='append', help='Adds a router that can only act as a server, not a client.')
     parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
@@ -32,26 +31,24 @@ def main():
 #    parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
 #    parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
+    parser.add_argument('-v', '--verbose', action='append_const', const='verbose', help='Specify multiple times to make things more verbose')
+    parser.add_argument('--version', action='version', version='v0.6.0')
+    
     for plugin in pm.getAllPlugins():
         pm.activatePluginByName(plugin.name)
         plugin.plugin_object.setupargs(parser)
     
     arg = parser.parse_args()
     
-    total_count = 0
-    if arg.router:
-        total_count += len(arg.router)
+    l = logging.getLogger()
+    if arg.verbose:
+        if len(arg.verbose) == 1:
+            l.setLevel(logging.INFO)
+            print 'Info'
+        if len(arg.verbose) >= 2:
+            l.setLevel(logging.DEBUG)
+            print 'Debug'
     
-    if arg.server:
-        total_count += len(arg.server)
-    
-    if arg.client:
-        total_count += len(arg.client)
-    
-    if total_count < 2:
-        parser.print_help()
-        raise ValueError('You must have a combination of two or more routers, servers, and clients')
-
     # Call activate() on all plugins so they prep themselves for use
     for plugin in pm.getAllPlugins():
         plugin.plugin_object.activate()
@@ -97,6 +94,4 @@ def main():
 
 
 if __name__ == "__main__":
-    #TODO: Set debug level based on -vvv
-    logging.basicConfig(level=logging.DEBUG)
     main()
