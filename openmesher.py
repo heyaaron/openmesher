@@ -61,9 +61,7 @@ def main():
         arg.ports.pop()
     
     port_list = []
-    #If we need to generate random ports...
     if arg.random:
-        #On a bad day, we need n(n-1)/2 ports (if all devices are routers).  Generate that many random ports.
         numdevs = 0
         if arg.router:
             numdevs += len(arg.router)
@@ -74,9 +72,9 @@ def main():
         if arg.client:
             numdevs += len(arg.client)
         
-        portsneeded = numdevs * (numdevs - 1) / 2
+        ports_needed = numdevs * (numdevs - 1) / 2
         
-        for i in range(0, portsneeded):
+        for i in range(0, ports_needed):
             port_list.append(random.randrange(1025,32767))
     
     try:
