@@ -82,9 +82,6 @@ class Mesh():
     subnets = []
     
     def __init__(self, routerlinks, ports, subnets):
-        #BUG: Rewrite mesh init to support Ports=None to randomly assign high-level ports
-        
-        self.ports = ports
         logging.debug('Subnets available: %s' %(subnets))
         for sub in subnets:
             logging.debug('Processing subnet: %s' %(sub))
@@ -109,7 +106,10 @@ class Mesh():
         for rtr in routerlinks:
             for rtrclient in routerlinks[rtr]:
                 logging.debug('Creating new link from %s to %s with iface %s' %(rtr, rtrclient, self.iface_count))
-                newlink = Link(self.routers[rtr], self.routers[rtrclient], ports.pop(), self.iface_count, self.subnets.pop())
+                try:
+                    newlink = Link(self.routers[rtr], self.routers[rtrclient], ports.pop(), self.iface_count, self.subnets.pop())
+                except IndexError as e:
+                    raise IndexError('Not enough ports available.  Add additional port ranges and try again.')
                 
                 if not self.links.has_key(rtr):
                     self.links[rtr] = []
@@ -120,6 +120,7 @@ class Mesh():
                 self.links[rtrclient].append(newlink)
                 self.iface_count += 1
         
+        #BUG: Wow--this is screwed up.  Bad math, requires too many ports, etc...
         links_needed = 0
         for srv in self.links:
             links_needed += len(self.links[srv])
@@ -128,14 +129,8 @@ class Mesh():
         subnets_available = len(self.subnets)
         logging.debug('%s subnets available' %(subnets_available))
         
-        ports_available = len(self.ports)
-        logging.debug('%s ports available' %(ports_available))
-        
         if links_needed > subnets_available:
             raise Exception('Not enough subnets available: %s needed, %s available' %(links_needed, subnets_available))
-        
-        if links_needed > ports_available:
-            raise Exception('Not enough ports available: %s needed, %s available' %(links_needed, ports_available))
     
     def __unicode__(self):
         return '%s routers, %s links' %(len(self.routers), len(probstat.Combination(self.routers.keys(), 2)))

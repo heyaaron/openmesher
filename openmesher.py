@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import datetime, glob, os, shutil, subprocess, tempfile, logging, sys, argparse
+import datetime, glob, os, shutil, subprocess, tempfile, logging, sys, argparse, random
 import ipaddr, probstat, IPy, paramiko, yapsy
 from interfaces import *
 from lib import *
@@ -26,9 +26,12 @@ def main():
     parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
     
     #BUG: Stupid argparse appends your switches to the default.
-    parser.add_argument('-p', '--ports', action='append', required=True)
     parser.add_argument('-n', '--network', action='append', required=True)
-#    parser.add_argument('-p', '--ports', action='append', default=['7000-7999'])
+
+    portgroup = parser.add_mutually_exclusive_group()
+    portgroup.add_argument('-p', '--ports', action='append', default=['7000-7999'])
+    portgroup.add_argument('-a', '--random', action='store_true')
+    
 #    parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
     parser.add_argument('-v', '--verbose', action='append_const', const='verbose', help='Specify multiple times to make things more verbose')
@@ -53,11 +56,33 @@ def main():
     for plugin in pm.getAllPlugins():
         plugin.plugin_object.activate()
     
+    if len(arg.ports) > 1:
+        arg.ports.reverse()
+        arg.ports.pop()
+    
     port_list = []
+    if arg.random:
+        numdevs = 0
+        if arg.router:
+            numdevs += len(arg.router)
+        
+        if arg.server:
+            numdevs += len(arg.server)
+        
+        if arg.client:
+            numdevs += len(arg.client)
+        
+        ports_needed = numdevs * (numdevs - 1) / 2
+        
+        for i in range(0, ports_needed):
+            port_list.append(random.randrange(1025,32767))
+    
     try:
-        for portrange in arg.ports:
-            portstart, portstop = portrange.split('-')
-            port_list += range(int(portstart),int(portstop))
+        if not arg.random:
+            # If we're not using random ports, pull whatever is in arg.ports
+            for portrange in arg.ports:
+                portstart, portstop = portrange.split('-')
+                port_list += range(int(portstart),int(portstop))
     except ValueError as e:
         print 'Invalid port range: %s' %(portrange)
         raise e
