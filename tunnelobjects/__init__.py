@@ -82,9 +82,6 @@ class Mesh():
     subnets = []
     
     def __init__(self, routerlinks, ports, subnets):
-        #BUG: Rewrite mesh init to support Ports=None to randomly assign high-level ports
-        
-        self.ports = ports
         logging.debug('Subnets available: %s' %(subnets))
         for sub in subnets:
             logging.debug('Processing subnet: %s' %(sub))
@@ -129,14 +126,8 @@ class Mesh():
         subnets_available = len(self.subnets)
         logging.debug('%s subnets available' %(subnets_available))
         
-        ports_available = len(self.ports)
-        logging.debug('%s ports available' %(ports_available))
-        
         if links_needed > subnets_available:
             raise Exception('Not enough subnets available: %s needed, %s available' %(links_needed, subnets_available))
-        
-        if links_needed > ports_available:
-            raise Exception('Not enough ports available: %s needed, %s available' %(links_needed, ports_available))
     
     def __unicode__(self):
         return '%s routers, %s links' %(len(self.routers), len(probstat.Combination(self.routers.keys(), 2)))
