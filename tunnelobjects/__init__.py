@@ -106,7 +106,10 @@ class Mesh():
         for rtr in routerlinks:
             for rtrclient in routerlinks[rtr]:
                 logging.debug('Creating new link from %s to %s with iface %s' %(rtr, rtrclient, self.iface_count))
-                newlink = Link(self.routers[rtr], self.routers[rtrclient], ports.pop(), self.iface_count, self.subnets.pop())
+                try:
+                    newlink = Link(self.routers[rtr], self.routers[rtrclient], ports.pop(), self.iface_count, self.subnets.pop())
+                except IndexError as e:
+                    raise IndexError('Not enough ports available.  Add additional port ranges and try again.')
                 
                 if not self.links.has_key(rtr):
                     self.links[rtr] = []
