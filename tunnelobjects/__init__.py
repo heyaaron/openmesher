@@ -28,6 +28,7 @@ class Link():
     iface = None
     block = None
     key = None
+    OpenVPNPath = None
     
     def linkname(self):
         if self.server is None and self.client is None:
@@ -36,7 +37,7 @@ class Link():
             return '%s-%s' %(self.server.hostname, self.client.hostname)
     
     def _genkey(self):
-        proc = subprocess.Popen("openvpn --genkey --secret /dev/stdout", shell=True, stdout=subprocess.PIPE)
+        proc = subprocess.Popen("%s --genkey --secret /dev/stdout" %(self.OpenVPNPath), shell=True, stdout=subprocess.PIPE)
         proc.wait()
         (stdout, stderr) = proc.communicate()
         if proc.returncode != 0:
@@ -44,6 +45,15 @@ class Link():
         self.key = stdout
     
     def __init__(self, serverrouter, clientrouter, linkport, iface_number, block):
+        #BUG: Hack because Ubuntu 11.10 moved openvpn from /bin to /sbin and the user doesn't have a path to /sbin.  Need to search path, then check /sbin
+        for ovp in ['/bin', '/sbin', '/usr/bin', '/usr/sbin']:
+            if os.path.isfile('%s/openvpn' %ovp):
+                self.OpenVPNPath = "%s/openvpn" %(ovp)
+                break
+        
+        if not self.OpenVPNPath:
+            raise IOError('Unable to locate OpenVPN executable')
+        
         self.block = block
         self.server = serverrouter
         self.client = clientrouter
