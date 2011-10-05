@@ -1,6 +1,7 @@
-import logging, interfaces, os, datetime, sys
+import logging, os, datetime, sys
 import glob, tempfile, subprocess
-from lib import nested_dict_merge
+from openmesher.lib import nested_dict_merge
+from openmesher.interfaces import IOpenMesherPackagePlugin
 
 def dump_config_files(base_path, files_dict):
             for router in files_dict:
@@ -26,7 +27,7 @@ def _mkdirs(path):
             raise
 
 
-class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
+class MakeDEBs(IOpenMesherPackagePlugin):
     def activate(self):
         self._register('makedebs/changelog.conf')
         self._register('makedebs/compat.conf')

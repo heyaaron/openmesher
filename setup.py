@@ -10,7 +10,7 @@ setup(name='openmesher',
       url='https://github.com/darkpixel/openmesher',
       requires=['ipaddr', 'probstat', 'IPy', 'Yapsy', 'Jinja2'],
       packages=find_packages(),
-      scripts=['openmesher.py'],
+      scripts=['openmesher/openmesher.py'],
       classifiers=[
           'Development Status :: 4 - Beta',
           'Environment :: Console',

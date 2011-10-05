@@ -1,7 +1,8 @@
-import logging, interfaces, os, IPy
+import logging, os, IPy
 from StringIO import StringIO
+from openmesher.interfaces import IOpenMesherConfigPlugin
 
-class ReverseDNS(interfaces.IOpenMesherConfigPlugin):
+class ReverseDNS(IOpenMesherConfigPlugin):
     def activate(self):
         self._register('reversedns/reverse.conf')
         
