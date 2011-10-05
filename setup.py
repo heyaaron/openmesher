@@ -11,6 +11,7 @@ setup(name='openmesher',
       requires=['ipaddr', 'probstat', 'IPy', 'Yapsy', 'Jinja2'],
       packages=find_packages(),
       scripts=['openmesher.py'],
+      install_requires=['distribute'],
       classifiers=[
           'Development Status :: 4 - Beta',
           'Environment :: Console',
