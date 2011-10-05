@@ -1,8 +1,8 @@
 import logging, os, datetime, sys
 import glob, tempfile, subprocess
 import paramiko
-from openmesher.interfaces import IOpenMesherDeployPlugin
-from openmesher.lib import *
+from OpenMesher.interfaces import IOpenMesherDeployPlugin
+from OpenMesher.lib import *
 
 class SSHDeploy(IOpenMesherDeployPlugin):
     def setupargs(self, parser):

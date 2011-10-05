@@ -1,7 +1,7 @@
 import logging, os, datetime, sys
 import glob, tempfile, subprocess
-from openmesher.lib import nested_dict_merge
-from openmesher.interfaces import IOpenMesherPackagePlugin
+from OpenMesher.lib import nested_dict_merge
+from OpenMesher.interfaces import IOpenMesherPackagePlugin
 
 def dump_config_files(base_path, files_dict):
             for router in files_dict:

@@ -1,6 +1,6 @@
 import logging
 from jinja2 import Environment, FileSystemLoader, ChoiceLoader
-from openmesher.interfaces import IOpenMesherConfigPlugin
+from OpenMesher.interfaces import IOpenMesherConfigPlugin
 
 class OpenVPN(IOpenMesherConfigPlugin):
     def activate(self):

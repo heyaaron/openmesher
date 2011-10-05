@@ -1,6 +1,6 @@
 import logging, os
 from datetime import datetime
-from openmesher.interfaces import IOpenMesherConfigPlugin
+from OpenMesher.interfaces import IOpenMesherConfigPlugin
 
 
 class Quagga(IOpenMesherConfigPlugin):

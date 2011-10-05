@@ -23,7 +23,7 @@ class IOpenMesherConfigPlugin(IOpenMesherBasePlugin):
         self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('%s/.openmesher/' %(os.path.expanduser('~'))),
-                FileSystemLoader('%s/openmesher/plugins/' %(os.getcwd())),
+                FileSystemLoader('%s/OpenMesher/plugins/' %(os.getcwd())),
             ]))
     
     def _register(self, templatename):
@@ -55,7 +55,7 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
         self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('~/.openmesher/'),
-                FileSystemLoader('%s/openmesher/plugins/' %(os.getcwd())),
+                FileSystemLoader('%s/OpenMesher/plugins/' %(os.getcwd())),
             ]))
     
     def _register(self, templatename):
