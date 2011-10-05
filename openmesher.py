@@ -35,7 +35,7 @@ def main():
 #    parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     
     parser.add_argument('-v', '--verbose', action='append_const', const='verbose', help='Specify multiple times to make things more verbose')
-    parser.add_argument('--version', action='version', version='v0.6.0')
+    parser.add_argument('--version', action='version', version='v0.6.1')
     
     for plugin in pm.getAllPlugins():
         pm.activatePluginByName(plugin.name)
