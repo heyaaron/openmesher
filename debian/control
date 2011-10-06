@@ -1,0 +1,17 @@
+Source: openmesher
+Priority: extra
+Maintainer: Aaron C. de Bruyn <aaron@heyaaron.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.2
+Section: misc
+Homepage: https://github.com/darkpixel/openmesher/
+Vcs-Git: git://github.com/darkpixel/openmesher.git
+Vcs-Browser: https://github.com/darkpixel/openmesher/
+
+Package: openmesher
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Easily create and deploy an OpenVPN mesh
+ Easily create and deploy an OpenVPN mesh using OpenVPN, Quagga (rip), and Shorewall.
+ Plugins provided to generate reverse DNS zones, create Debian packages, and scp packages
+ to the target routers.
