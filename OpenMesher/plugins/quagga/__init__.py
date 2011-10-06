@@ -11,6 +11,8 @@ class Quagga(IOpenMesherConfigPlugin):
     def setupargs(self, parser):
         parser.add_argument('--password', action='store', help='Specify quagga password')
         parser.add_argument('--enable-password', action='store', help='Specify quagga enable password')
+        super(Quagga, self).setupargs(parser)
+
     
     def process(self, mesh, cliargs = None):
         logging.debug('Generating Quagga config...')
