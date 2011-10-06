@@ -1,7 +1,9 @@
-import logging, interfaces, os
+import logging, os
 from datetime import datetime
+from OpenMesher.interfaces import IOpenMesherConfigPlugin
 
-class Shorewall(interfaces.IOpenMesherConfigPlugin):
+
+class Shorewall(IOpenMesherConfigPlugin):
     def activate(self):
         self._register('shorewall/interfaces.conf')
         self._register('shorewall/rules.conf')

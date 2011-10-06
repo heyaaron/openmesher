@@ -2,16 +2,22 @@
 
 import datetime, glob, os, shutil, subprocess, tempfile, logging, sys, argparse, random
 import ipaddr, probstat, IPy, paramiko, yapsy
-from interfaces import *
-from lib import *
+from distutils.sysconfig import get_python_lib
+
+from OpenMesher.interfaces import *
+from OpenMesher.lib import *
+from OpenMesher.linkmesh import create_link_mesh
 
 from yapsy.PluginManager import PluginManager
-from tunnelobjects import *
+from OpenMesher.tunnelobjects import *
 
 def main():
     #Find and load plugins
     pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
-    pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
+    
+    libpath = '%s/OpenMesher/plugins' %(get_python_lib())
+    
+    pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./OpenMesher/plugins", "./plugins", libpath])
     pm.setPluginInfoExtension('plugin')
     pm.setCategoriesFilter({
         'config': IOpenMesherConfigPlugin,
@@ -87,7 +93,6 @@ def main():
         print 'Invalid port range: %s' %(portrange)
         raise e
     
-    from linkmesh import create_link_mesh
     linkmesh = create_link_mesh(routers=arg.router, servers=arg.server, clients=arg.client)
     
     m = Mesh(linkmesh, port_list, arg.network)
@@ -119,4 +124,6 @@ def main():
 
 
 if __name__ == "__main__":
+    l = logging.getLogger()
+    l.setLevel(logging.DEBUG)
     main()

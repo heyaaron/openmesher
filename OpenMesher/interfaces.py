@@ -1,6 +1,6 @@
 import os
 from yapsy.IPlugin import IPlugin
-from jinja2 import Environment, FileSystemLoader, ChoiceLoader
+from jinja2 import Environment, FileSystemLoader, ChoiceLoader, PackageLoader
 
 
 class IOpenMesherBasePlugin(IPlugin):
@@ -23,7 +23,8 @@ class IOpenMesherConfigPlugin(IOpenMesherBasePlugin):
         self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('%s/.openmesher/' %(os.path.expanduser('~'))),
-                FileSystemLoader('%s/plugins/' %(os.getcwd())),
+                FileSystemLoader('%s/OpenMesher/plugins/' %(os.getcwd())),
+                PackageLoader('OpenMesher', 'plugins'),
             ]))
     
     def _register(self, templatename):
@@ -55,7 +56,8 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
         self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('~/.openmesher/'),
-                FileSystemLoader('%s/plugins/' %(os.getcwd())),
+                FileSystemLoader('%s/OpenMesher/plugins/' %(os.getcwd())),
+                PackageLoader('OpenMesher', 'plugins'),
             ]))
     
     def _register(self, templatename):

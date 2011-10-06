@@ -1,7 +1,9 @@
-import logging, interfaces, os
+import logging, os
 from datetime import datetime
+from OpenMesher.interfaces import IOpenMesherConfigPlugin
 
-class Quagga(interfaces.IOpenMesherConfigPlugin):
+
+class Quagga(IOpenMesherConfigPlugin):
     def activate(self):
         self._register('quagga/zebra.conf')
         self._register('quagga/ripd.conf')

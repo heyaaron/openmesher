@@ -1,8 +1,8 @@
-from interfaces import *
-from lib import *
-import logging, interfaces, os, datetime, sys
+import logging, os, datetime, sys
 import glob, tempfile, subprocess
 import paramiko
+from OpenMesher.interfaces import IOpenMesherDeployPlugin
+from OpenMesher.lib import *
 
 class SSHDeploy(IOpenMesherDeployPlugin):
     def setupargs(self, parser):
