@@ -44,19 +44,24 @@ def main():
     parser.add_argument('--version', action='version', version='v0.6.1')
     
     for plugin in pm.getAllPlugins():
-        pm.activatePluginByName(plugin.name)
         plugin.plugin_object.setupargs(parser)
-    
+
     arg = parser.parse_args()
+    
+    for plugin in pm.getAllPlugins():
+        if plugin.plugin_object.__class__.__name__.lower() in arg:
+            if eval('arg.%s' %(plugin.plugin_object.__class__.__name__.lower())):
+                print 'Plugin enabled: %s' %(plugin.name)
+                pm.activatePluginByName(plugin.name)
+            else:
+                print 'Plugin disabled: %s' %(plugin.name)
     
     l = logging.getLogger()
     if arg.verbose:
         if len(arg.verbose) == 1:
             l.setLevel(logging.INFO)
-            print 'Info'
         if len(arg.verbose) >= 2:
             l.setLevel(logging.DEBUG)
-            print 'Debug'
     
     # Call activate() on all plugins so they prep themselves for use
     for plugin in pm.getAllPlugins():
