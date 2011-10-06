@@ -4,3 +4,4 @@ router-list
 *.deb
 rev.db
 *.swp
+docs/_*
