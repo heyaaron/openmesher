@@ -4,6 +4,7 @@ from jinja2 import Environment, FileSystemLoader, ChoiceLoader, PackageLoader
 
 
 class IOpenMesherBasePlugin(IPlugin):
+    _enabled = False
     def setupargs(self, parser):
         """
             Plugins can add their own cli switches by calling 'parser.add_argument'.
