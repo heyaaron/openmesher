@@ -42,9 +42,11 @@ def main():
     parser.add_argument('-v', '--verbose', action='append_const', const='verbose', help='Specify multiple times to make things more verbose')
     parser.add_argument('--version', action='version', version='v0.6.1')
     
+    pluginargsgroup = parser.add_argument_group('plugins')
+    
     for plugin in pm.getAllPlugins():
-        plugin.plugin_object.setupargs(parser)
-
+        plugin.plugin_object.setupargs(pluginargsgroup)
+    
     arg = parser.parse_args()
     
     for plugin in pm.getAllPlugins():
