@@ -132,7 +132,8 @@ def main():
     
     # Run through deployment plugins
     for plugin in pm.getPluginsOfCategory('deploy'):
-        plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
+        if plugin.plugin_object._enabled:
+            plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
     
     logging.info('OpenMesher run complete')
 
