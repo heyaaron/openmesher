@@ -31,10 +31,7 @@ class SSHDeploy(IOpenMesherDeployPlugin):
         
         for router in deploy_dict:
             logging.info('Connecting to %s...' %(router))
-            import pprint
-            pprint.pprint(deploy_dict)
             
-            #BUG: Catch bad filenames, exceptions
             local_file_path = deploy_dict[router]
             local_file_split = deploy_dict[router].split('/')
             local_file_name = local_file_split[len(local_file_split) - 1]
