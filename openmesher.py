@@ -58,12 +58,11 @@ def main():
     
     # Call activate() on all plugins so they prep themselves for use
     for plugin in pm.getAllPlugins():
-        logging.debug(dir(plugin))
-        if plugin.is_activated:
-            logging.debug('%s is_activated()' %(plugin.name))
+        if eval('arg.%s' %(plugin.plugin_object.__class__.__name__.lower())):
+            logging.info('Enabled plugin: %s' %(plugin.name))
+            pm.activatePluginByName(plugin.name)
             plugin.plugin_object.activate()
-        else:
-            logging.debug('%s not is_activated()' %(plugin.name))
+            plugin.plugin_object._enabled = True
     
     if len(arg.ports) > 1:
         arg.ports.reverse()
