@@ -36,6 +36,7 @@ class MakeDEBs(IOpenMesherPackagePlugin):
     
     def setupargs(self, parser):
         parser.add_argument('--dpkg-version', default='1.0', action='store', help='Version number of the deb to create')
+        super(MakeDEBs, self).setupargs(parser)
 
     #BUG: Need to fix the plugin arch so services can pass their config dirs to the package generator
     def process(self, mesh, configPlugins = None, cliargs = None, include_dirs = ['openvpn', 'quagga', 'shorewall', 'mesh-reverse.db'], restart_services = ['openvpn', 'quagga', 'shorewall']):
@@ -80,8 +81,7 @@ class MakeDEBs(IOpenMesherPackagePlugin):
         
         dump_config_files(base_path, self._files)
         
-        #Begin packaging into dpkg
-        logging.debug('Assembling files for debs...')
+        logging.info('Assembling files for debs...')
         for plugin in configPlugins:
             logging.debug('Processing package files from plugin %s...' %(plugin))
             dump_config_files(base_path, plugin.files())
