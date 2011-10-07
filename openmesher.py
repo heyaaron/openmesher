@@ -49,18 +49,6 @@ def main():
     
     arg = parser.parse_args()
     
-    for plugin in pm.getAllPlugins():
-        if plugin.plugin_object.__class__.__name__.lower() in arg:
-            if eval('arg.%s' %(plugin.plugin_object.__class__.__name__.lower())):
-                logging.debug('Plugin enabled: %s' %(plugin.name))
-                pm.activatePluginByName(plugin.name)
-            else:
-                logging.debug('Plugin disabled: %s' %(plugin.name))
-                pm.deactivatePluginByName(plugin.name)
-        else:
-            logging.debug('Plugin disabled: %s' %(plugin.name))
-            pm.deactivatePluginByName(plugin.name)
-    
     l = logging.getLogger()
     if arg.verbose:
         if len(arg.verbose) == 1:
