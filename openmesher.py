@@ -13,7 +13,7 @@ from OpenMesher.tunnelobjects import *
 
 def main():
     #Find and load plugins
-    pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
+    pm = PluginManager()
     
     libpath = '%s/OpenMesher/plugins' %(get_python_lib())
     
