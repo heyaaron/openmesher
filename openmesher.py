@@ -134,8 +134,7 @@ def main():
     for plugin in pm.getPluginsOfCategory('deploy'):
         plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
     
-    
-    logging.info('OpenMesher complete')
+    logging.info('OpenMesher run complete')
 
 
 if __name__ == "__main__":
