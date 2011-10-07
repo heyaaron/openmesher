@@ -104,12 +104,14 @@ def main():
     # Run through config plugins
     configPlugins = []
     for plugin in pm.getPluginsOfCategory('config'):
-        plugin.plugin_object.process(m, arg)
-        configPlugins.append(plugin.plugin_object)
-        if files:
-            files = nested_dict_merge(files, plugin.plugin_object.files())
-        else:
-            files = plugin.plugin_object.files()
+        if plugin.plugin_object._enabled:
+            plugin.plugin_object.process(m, arg)
+            configPlugins.append(plugin.plugin_object)
+            if files:
+                files = nested_dict_merge(files, plugin.plugin_object.files())
+            else:
+                files = plugin.plugin_object.files()
+    
     
     # Run through packaging plugins
     packagePlugins = []
