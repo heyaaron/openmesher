@@ -1,4 +1,4 @@
-OpenMesher v0.6.1
+OpenMesher v0.6.2
 =================
 Copyright (c) 2010 Aaron C. de Bruyn <aaron@heyaaron.com>
 
