@@ -81,8 +81,7 @@ class MakeDEBs(IOpenMesherPackagePlugin):
         
         dump_config_files(base_path, self._files)
         
-        #Begin packaging into dpkg
-        logging.debug('Assembling files for debs...')
+        logging.info('Assembling files for debs...')
         for plugin in configPlugins:
             logging.debug('Processing package files from plugin %s...' %(plugin))
             dump_config_files(base_path, plugin.files())
