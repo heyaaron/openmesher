@@ -12,9 +12,6 @@ class IOpenMesherBasePlugin(IPlugin):
             
             Unless overridden, the function will automatically create a cli arg for --classname to allow users to enable usage of the plugin.
         """
-        #example:
-        #parser.add_argument('--myarg', action='store', help='Specify myarg')
-        logging.debug('Creating parameter --%s' %(self.__class__.__name__.lower()))
         parser.add_argument('--%s' %(self.__class__.__name__.lower()), action='store_true', help='Enable %s plugin' %(self.__class__.__name__.lower()))
 
 
