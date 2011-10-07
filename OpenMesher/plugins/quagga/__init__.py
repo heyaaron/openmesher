@@ -1,7 +1,9 @@
-import logging, interfaces, os
+import logging, os
 from datetime import datetime
+from OpenMesher.interfaces import IOpenMesherConfigPlugin
 
-class Quagga(interfaces.IOpenMesherConfigPlugin):
+
+class Quagga(IOpenMesherConfigPlugin):
     def activate(self):
         self._register('quagga/zebra.conf')
         self._register('quagga/ripd.conf')
@@ -9,6 +11,8 @@ class Quagga(interfaces.IOpenMesherConfigPlugin):
     def setupargs(self, parser):
         parser.add_argument('--password', action='store', help='Specify quagga password')
         parser.add_argument('--enable-password', action='store', help='Specify quagga enable password')
+        super(Quagga, self).setupargs(parser)
+
     
     def process(self, mesh, cliargs = None):
         logging.debug('Generating Quagga config...')

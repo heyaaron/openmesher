@@ -1,22 +1,16 @@
-from interfaces import *
-from lib import *
-import logging, interfaces, os, datetime, sys
+import logging, os, datetime, sys
 import glob, tempfile, subprocess
 import paramiko
+from OpenMesher.interfaces import IOpenMesherDeployPlugin
+from OpenMesher.lib import *
 
 class SSHDeploy(IOpenMesherDeployPlugin):
     def setupargs(self, parser):
-        parser.add_argument('--deploy', action='store_true', help='Attempt to deploy the files to the routers (will not install or restart services)')
         parser.add_argument('--deploy-username', action='store', help='Username to use when deploying via SSH')
         parser.add_argument('--deploy-dir', action='store', help='Path to upload files')
-    
-    def activate(self):
-        pass
+        super(SSHDeploy, self).setupargs(parser)
     
     def deploy(self, packagePlugins = None, cliargs = None, stoponfailure = False):
-        if not cliargs.deploy:
-            return
-        
         username = cliargs.deploy_username or 'root'
         deploydir = cliargs.deploy_dir or '/root/'
         logging.info('Assembling files for deployment...')
@@ -31,10 +25,7 @@ class SSHDeploy(IOpenMesherDeployPlugin):
         
         for router in deploy_dict:
             logging.info('Connecting to %s...' %(router))
-            import pprint
-            pprint.pprint(deploy_dict)
             
-            #BUG: Catch bad filenames, exceptions
             local_file_path = deploy_dict[router]
             local_file_split = deploy_dict[router].split('/')
             local_file_name = local_file_split[len(local_file_split) - 1]

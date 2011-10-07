@@ -1,19 +1,19 @@
-import logging, interfaces, os, datetime, sys
+import logging, os, datetime, sys
 import glob, tempfile, subprocess
-from lib import nested_dict_merge
+from OpenMesher.lib import nested_dict_merge
+from OpenMesher.interfaces import IOpenMesherPackagePlugin
 
 def dump_config_files(base_path, files_dict):
             for router in files_dict:
                 for cfgfile in files_dict[router]:
                     cfgfile_path = os.path.abspath(base_path + '/' + router + '/' + cfgfile)
-                    #logging.debug('Creating file %s for router %s' %(cfgfile_path, router))
+                    logging.debug('Creating file %s for router %s' %(cfgfile_path, router))
                     fpath, fname = os.path.split(cfgfile_path)
                     _mkdirs(fpath)
                     fh = open(cfgfile_path, 'w')
                     fh.write(files_dict[router][cfgfile])
                     fh.close()
                     if fname == 'rules' or fname == 'postinst':
-                        #BUG: Hack to make dpkg rules file executable
                         os.chmod(cfgfile_path, 0744)
 
 def _mkdirs(path):
@@ -26,7 +26,7 @@ def _mkdirs(path):
             raise
 
 
-class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
+class MakeDEBs(IOpenMesherPackagePlugin):
     def activate(self):
         self._register('makedebs/changelog.conf')
         self._register('makedebs/compat.conf')
@@ -36,14 +36,15 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
     
     def setupargs(self, parser):
         parser.add_argument('--dpkg-version', default='1.0', action='store', help='Version number of the deb to create')
+        super(MakeDEBs, self).setupargs(parser)
 
     #BUG: Need to fix the plugin arch so services can pass their config dirs to the package generator
     def process(self, mesh, configPlugins = None, cliargs = None, include_dirs = ['openvpn', 'quagga', 'shorewall', 'mesh-reverse.db'], restart_services = ['openvpn', 'quagga', 'shorewall']):
         base_path = tempfile.mkdtemp(prefix='openmesher-')
-        logging.info('Base path: %s' %(base_path))
+        logging.warn('Packaging path: %s' %(base_path))
         _mkdirs(base_path)
         
-        logging.debug('Generating control files for package...')
+        logging.info('Generating control files for package...')
         
         for router in mesh.routers:
             self._files[router] = {}
@@ -80,7 +81,6 @@ class MakeDEBs(interfaces.IOpenMesherPackagePlugin):
         
         dump_config_files(base_path, self._files)
         
-        #Begin packaging into dpkg
         logging.info('Assembling files for debs...')
         for plugin in configPlugins:
             logging.debug('Processing package files from plugin %s...' %(plugin))

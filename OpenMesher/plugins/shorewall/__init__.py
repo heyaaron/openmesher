@@ -1,7 +1,9 @@
-import logging, interfaces, os
+import logging, os
 from datetime import datetime
+from OpenMesher.interfaces import IOpenMesherConfigPlugin
 
-class Shorewall(interfaces.IOpenMesherConfigPlugin):
+
+class Shorewall(IOpenMesherConfigPlugin):
     def activate(self):
         self._register('shorewall/interfaces.conf')
         self._register('shorewall/rules.conf')
@@ -10,6 +12,8 @@ class Shorewall(interfaces.IOpenMesherConfigPlugin):
         parser.add_argument('--wanzone', action='store', default='wan', help='Name of the WAN zone in Shorewall')
         parser.add_argument('--fwzone', action='store', default='fw', help='Name of the Firewall zone in Shorewall')
         parser.add_argument('--vpnzone', action='store', default='vpn', help='Name of the VPN zone in Shorewall')
+        super(Shorewall, self).setupargs(parser)
+
     
     def process(self, mesh, cliargs=None):
         logging.debug('Generating Shorewall config...')

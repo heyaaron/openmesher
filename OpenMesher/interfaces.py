@@ -1,18 +1,19 @@
-import os
+import os, logging
 from yapsy.IPlugin import IPlugin
-from jinja2 import Environment, FileSystemLoader, ChoiceLoader
+from jinja2 import Environment, FileSystemLoader, ChoiceLoader, PackageLoader
 
 
 class IOpenMesherBasePlugin(IPlugin):
+    _enabled = False
     def setupargs(self, parser):
         """
             Plugins can add their own cli switches by calling 'parser.add_argument'.
             parser: an argparse ArgumentParser object.
             Function does not return anything.
+            
+            Unless overridden, the function will automatically create a cli arg for --classname to allow users to enable usage of the plugin.
         """
-        #example:
-        #parser.add_argument('--myarg', action='store', help='Specify myarg')
-        pass
+        parser.add_argument('--%s' %(self.__class__.__name__.lower()), action='store_true', help='Enable %s plugin' %(self.__class__.__name__.lower()))
 
 
 class IOpenMesherConfigPlugin(IOpenMesherBasePlugin):
@@ -23,7 +24,8 @@ class IOpenMesherConfigPlugin(IOpenMesherBasePlugin):
         self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('%s/.openmesher/' %(os.path.expanduser('~'))),
-                FileSystemLoader('%s/plugins/' %(os.getcwd())),
+                FileSystemLoader('%s/OpenMesher/plugins/' %(os.getcwd())),
+                PackageLoader('OpenMesher', 'plugins'),
             ]))
     
     def _register(self, templatename):
@@ -55,7 +57,8 @@ class IOpenMesherPackagePlugin(IOpenMesherBasePlugin):
         self._templates = {}
         self._env = Environment(loader=ChoiceLoader([
                 FileSystemLoader('~/.openmesher/'),
-                FileSystemLoader('%s/plugins/' %(os.getcwd())),
+                FileSystemLoader('%s/OpenMesher/plugins/' %(os.getcwd())),
+                PackageLoader('OpenMesher', 'plugins'),
             ]))
     
     def _register(self, templatename):

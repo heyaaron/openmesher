@@ -2,16 +2,22 @@
 
 import datetime, glob, os, shutil, subprocess, tempfile, logging, sys, argparse, random
 import ipaddr, probstat, IPy, paramiko, yapsy
-from interfaces import *
-from lib import *
+from distutils.sysconfig import get_python_lib
+
+from OpenMesher.interfaces import *
+from OpenMesher.lib import *
+from OpenMesher.linkmesh import create_link_mesh
 
 from yapsy.PluginManager import PluginManager
-from tunnelobjects import *
+from OpenMesher.tunnelobjects import *
 
 def main():
     #Find and load plugins
-    pm = PluginManager(categories_filter={'Default': yapsy.IPlugin.IPlugin})
-    pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./plugins"])
+    pm = PluginManager()
+    
+    libpath = '%s/OpenMesher/plugins' %(get_python_lib())
+    
+    pm.setPluginPlaces(["/usr/share/openmesher/plugins", "~/.openmesher/plugins", "./OpenMesher/plugins", "./plugins", libpath])
     pm.setPluginInfoExtension('plugin')
     pm.setCategoriesFilter({
         'config': IOpenMesherConfigPlugin,
@@ -26,35 +32,49 @@ def main():
     parser.add_argument('-c', '--client', action='append', help='Adds a router than can only act as a client.  For example, a router that is behind NAT and not accessible by a public IP')
     
     #BUG: Stupid argparse appends your switches to the default.
+    #parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
     parser.add_argument('-n', '--network', action='append', required=True)
-
+    
     portgroup = parser.add_mutually_exclusive_group()
     portgroup.add_argument('-p', '--ports', action='append', default=['7000-7999'])
     portgroup.add_argument('-a', '--random', action='store_true')
     
-#    parser.add_argument('-n', '--network', action='append', default=['10.99.99.0/24'])
-    
     parser.add_argument('-v', '--verbose', action='append_const', const='verbose', help='Specify multiple times to make things more verbose')
-    parser.add_argument('--version', action='version', version='v0.6.1')
+    parser.add_argument('--version', action='version', version='v0.6.2')
+    
+    pluginargsgroup = parser.add_argument_group('plugins')
     
     for plugin in pm.getAllPlugins():
-        pm.activatePluginByName(plugin.name)
-        plugin.plugin_object.setupargs(parser)
+        plugin.plugin_object.setupargs(pluginargsgroup)
     
     arg = parser.parse_args()
+    
+    for plugin in pm.getAllPlugins():
+        if plugin.plugin_object.__class__.__name__.lower() in arg:
+            if eval('arg.%s' %(plugin.plugin_object.__class__.__name__.lower())):
+                logging.debug('Plugin enabled: %s' %(plugin.name))
+                pm.activatePluginByName(plugin.name)
+            else:
+                logging.debug('Plugin disabled: %s' %(plugin.name))
+                pm.deactivatePluginByName(plugin.name)
+        else:
+            logging.debug('Plugin disabled: %s' %(plugin.name))
+            pm.deactivatePluginByName(plugin.name)
     
     l = logging.getLogger()
     if arg.verbose:
         if len(arg.verbose) == 1:
             l.setLevel(logging.INFO)
-            print 'Info'
         if len(arg.verbose) >= 2:
             l.setLevel(logging.DEBUG)
-            print 'Debug'
     
     # Call activate() on all plugins so they prep themselves for use
     for plugin in pm.getAllPlugins():
-        plugin.plugin_object.activate()
+        if eval('arg.%s' %(plugin.plugin_object.__class__.__name__.lower())):
+            logging.info('Enabled plugin: %s' %(plugin.name))
+            pm.activatePluginByName(plugin.name)
+            plugin.plugin_object.activate()
+            plugin.plugin_object._enabled = True
     
     if len(arg.ports) > 1:
         arg.ports.reverse()
@@ -87,7 +107,6 @@ def main():
         print 'Invalid port range: %s' %(portrange)
         raise e
     
-    from linkmesh import create_link_mesh
     linkmesh = create_link_mesh(routers=arg.router, servers=arg.server, clients=arg.client)
     
     m = Mesh(linkmesh, port_list, arg.network)
@@ -97,25 +116,38 @@ def main():
     # Run through config plugins
     configPlugins = []
     for plugin in pm.getPluginsOfCategory('config'):
-        plugin.plugin_object.process(m, arg)
-        configPlugins.append(plugin.plugin_object)
-        if files:
-            files = nested_dict_merge(files, plugin.plugin_object.files())
-        else:
-            files = plugin.plugin_object.files()
+        if plugin.plugin_object._enabled:
+            plugin.plugin_object.process(m, arg)
+            configPlugins.append(plugin.plugin_object)
+            if files:
+                files = nested_dict_merge(files, plugin.plugin_object.files())
+            else:
+                files = plugin.plugin_object.files()
+    
+    #Grab list of folders that need to be in the package root
+    includedirs = []
+    for f in files:
+        for fldr in files[f]:
+            rootfldr = fldr.split('/')[1]
+            if rootfldr not in includedirs:
+                includedirs.append(rootfldr)
+    
+    logging.debug('The following folders will be packaged: %s' %(includedirs))
     
     # Run through packaging plugins
     packagePlugins = []
     for plugin in pm.getPluginsOfCategory('package'):
-        plugin.plugin_object.process(m, configPlugins=configPlugins, cliargs=arg)
-        packagePlugins.append(plugin.plugin_object)
+        if plugin.plugin_object._enabled:
+            #BUG: Services to restart may not necessarily be the same name as their config dir...
+            plugin.plugin_object.process(m, include_dirs=includedirs, restart_services=includedirs, configPlugins=configPlugins, cliargs=arg)
+            packagePlugins.append(plugin.plugin_object)
     
     # Run through deployment plugins
     for plugin in pm.getPluginsOfCategory('deploy'):
-        plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
+        if plugin.plugin_object._enabled:
+            plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
     
-    
-    logging.info('OpenMesher complete')
+    logging.info('OpenMesher run complete')
 
 
 if __name__ == "__main__":
