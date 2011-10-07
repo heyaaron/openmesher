@@ -52,10 +52,14 @@ def main():
     for plugin in pm.getAllPlugins():
         if plugin.plugin_object.__class__.__name__.lower() in arg:
             if eval('arg.%s' %(plugin.plugin_object.__class__.__name__.lower())):
-                print 'Plugin enabled: %s' %(plugin.name)
+                logging.debug('Plugin enabled: %s' %(plugin.name))
                 pm.activatePluginByName(plugin.name)
             else:
-                print 'Plugin disabled: %s' %(plugin.name)
+                logging.debug('Plugin disabled: %s' %(plugin.name))
+                pm.deactivatePluginByName(plugin.name)
+        else:
+            logging.debug('Plugin disabled: %s' %(plugin.name))
+            pm.deactivatePluginByName(plugin.name)
     
     l = logging.getLogger()
     if arg.verbose:
@@ -66,7 +70,12 @@ def main():
     
     # Call activate() on all plugins so they prep themselves for use
     for plugin in pm.getAllPlugins():
-        plugin.plugin_object.activate()
+        logging.debug(dir(plugin))
+        if plugin.is_activated:
+            logging.debug('%s is_activated()' %(plugin.name))
+            plugin.plugin_object.activate()
+        else:
+            logging.debug('%s not is_activated()' %(plugin.name))
     
     if len(arg.ports) > 1:
         arg.ports.reverse()
