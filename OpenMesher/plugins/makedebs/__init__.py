@@ -7,14 +7,13 @@ def dump_config_files(base_path, files_dict):
             for router in files_dict:
                 for cfgfile in files_dict[router]:
                     cfgfile_path = os.path.abspath(base_path + '/' + router + '/' + cfgfile)
-                    #logging.debug('Creating file %s for router %s' %(cfgfile_path, router))
+                    logging.debug('Creating file %s for router %s' %(cfgfile_path, router))
                     fpath, fname = os.path.split(cfgfile_path)
                     _mkdirs(fpath)
                     fh = open(cfgfile_path, 'w')
                     fh.write(files_dict[router][cfgfile])
                     fh.close()
                     if fname == 'rules' or fname == 'postinst':
-                        #BUG: Hack to make dpkg rules file executable
                         os.chmod(cfgfile_path, 0744)
 
 def _mkdirs(path):
@@ -41,10 +40,10 @@ class MakeDEBs(IOpenMesherPackagePlugin):
     #BUG: Need to fix the plugin arch so services can pass their config dirs to the package generator
     def process(self, mesh, configPlugins = None, cliargs = None, include_dirs = ['openvpn', 'quagga', 'shorewall', 'mesh-reverse.db'], restart_services = ['openvpn', 'quagga', 'shorewall']):
         base_path = tempfile.mkdtemp(prefix='openmesher-')
-        logging.info('Base path: %s' %(base_path))
+        logging.warn('Packaging path: %s' %(base_path))
         _mkdirs(base_path)
         
-        logging.debug('Generating control files for package...')
+        logging.info('Generating control files for package...')
         
         for router in mesh.routers:
             self._files[router] = {}
@@ -82,7 +81,7 @@ class MakeDEBs(IOpenMesherPackagePlugin):
         dump_config_files(base_path, self._files)
         
         #Begin packaging into dpkg
-        logging.info('Assembling files for debs...')
+        logging.debug('Assembling files for debs...')
         for plugin in configPlugins:
             logging.debug('Processing package files from plugin %s...' %(plugin))
             dump_config_files(base_path, plugin.files())
