@@ -112,12 +112,23 @@ def main():
             else:
                 files = plugin.plugin_object.files()
     
+    #Grab list of folders that need to be in the package root
+    includedirs = []
+    for f in files:
+        for fldr in files[f]:
+            rootfldr = fldr.split('/')[1]
+            if rootfldr not in includedirs:
+                includedirs.append(rootfldr)
+    
+    logging.debug('The following folders will be packaged: %s' %(includedirs))
     
     # Run through packaging plugins
     packagePlugins = []
     for plugin in pm.getPluginsOfCategory('package'):
-        plugin.plugin_object.process(m, configPlugins=configPlugins, cliargs=arg)
-        packagePlugins.append(plugin.plugin_object)
+        if plugin.plugin_object._enabled:
+            #BUG: Services to restart may not necessarily be the same name as their config dir...
+            plugin.plugin_object.process(m, include_dirs=includedirs, restart_services=includedirs, configPlugins=configPlugins, cliargs=arg)
+            packagePlugins.append(plugin.plugin_object)
     
     # Run through deployment plugins
     for plugin in pm.getPluginsOfCategory('deploy'):
