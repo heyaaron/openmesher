@@ -124,6 +124,4 @@ def main():
 
 
 if __name__ == "__main__":
-    l = logging.getLogger()
-    l.setLevel(logging.DEBUG)
     main()
