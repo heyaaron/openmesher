@@ -7,6 +7,6 @@ Standards-Version: 3.9.1
 
 Package: python-openmesher
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}
+Depends: ${misc:Depends}, ${python:Depends}, probstat
 Description: OpenMesher: Router OpenVPN p2p Mesh Link Generator
 
