@@ -5,3 +5,4 @@ router-list
 rev.db
 *.swp
 docs/_*
+openmesher.egg-info
