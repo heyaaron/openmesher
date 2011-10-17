@@ -1,0 +1,12 @@
+Source: openmesher
+Maintainer: Aaron C. de Bruyn <aaron@heyaaron.com>
+Section: python
+Priority: optional
+Build-Depends: python-setuptools (>= 0.6b3), python-all (>= 2.6.6-3), debhelper (>= 7.4.3)
+Standards-Version: 3.9.1
+
+Package: python-openmesher
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}
+Description: OpenMesher: Router OpenVPN p2p Mesh Link Generator
+
