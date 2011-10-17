@@ -1,3 +1,5 @@
+.pc/
+debian/patches
 build/
 *.pyc
 config
