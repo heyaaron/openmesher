@@ -1,3 +1,10 @@
+openmesher (0.6.2-1ubuntu3) oneiric; urgency=low
+
+  * Rename package to openmesher
+  * Add missing dependencies
+
+ -- Aaron C. de Bruyn <aaron@heyaaron.com>  Mon, 17 Oct 2011 15:29:17 -0700
+
 openmesher (0.6.2-1ubuntu2) oneiric; urgency=low
 
   * Corrected python-probstat dependency
