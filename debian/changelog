@@ -1,3 +1,10 @@
+openmesher (0.6.3-1ubuntu4) oneiric; urgency=low
+
+  * Fix lots of packaging issues
+  * Release Debian/Ubuntu package
+
+ -- Aaron C. de Bruyn <aaron@mxprime.net>  Sun, 23 Oct 2011 11:10:58 -0700
+
 openmesher (0.6.2-1ubuntu3) oneiric; urgency=low
 
   * Rename package to openmesher
