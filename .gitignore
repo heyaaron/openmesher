@@ -1,3 +1,6 @@
+.pc/
+debian/patches
+build/
 *.pyc
 config
 router-list
@@ -5,3 +8,4 @@ router-list
 rev.db
 *.swp
 docs/_*
+openmesher.egg-info
