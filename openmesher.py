@@ -105,7 +105,7 @@ def main():
                 port_list += range(int(portstart),int(portstop))
     except ValueError as e:
         print 'Invalid port range: %s' %(portrange)
-        raise e
+        raise ValueError('Invalid port range: %s' %(portrange))
     
     linkmesh = create_link_mesh(routers=arg.router, servers=arg.server, clients=arg.client)
     
