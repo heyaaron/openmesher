@@ -1,5 +1,5 @@
-configparser
 IPy
+configparser
 Jinja2
 Yapsy
 ipaddr

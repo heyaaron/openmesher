@@ -40,7 +40,7 @@ def main():
     portgroup.add_argument('-a', '--random', action='store_true')
     
     parser.add_argument('-v', '--verbose', action='append_const', const='verbose', help='Specify multiple times to make things more verbose')
-    parser.add_argument('--version', action='version', version='v0.6.3')
+    parser.add_argument('--version', action='version', version='v0.6.4')
     
     pluginargsgroup = parser.add_argument_group('plugins')
     
