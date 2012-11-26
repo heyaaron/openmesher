@@ -43,6 +43,5 @@ Developers and other geek-ilk
 =============================
 * Github rocks, fork it.
 * Patches are welcome
-* If you don't like the GitHub RSS feeds, you can follow @openmesher on twitter
 * No mailing lists, IRC channels, etc...  Not a big-enough project at the moment.
 
