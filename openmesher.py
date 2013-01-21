@@ -145,7 +145,10 @@ def main():
     # Run through deployment plugins
     for plugin in pm.getPluginsOfCategory('deploy'):
         if plugin.plugin_object._enabled:
-            plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
+            try:
+                plugin.plugin_object.deploy(packagePlugins=packagePlugins, cliargs=arg, stoponfailure=False)
+            except Exception as e:
+                print "Unable to deploy due to error: %s" %(e)
     
     logging.info('OpenMesher run complete')
 
