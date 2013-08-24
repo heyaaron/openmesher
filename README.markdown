@@ -2,6 +2,8 @@ OpenMesher v0.6.3
 =================
 Copyright (c) 2010 Aaron C. de Bruyn <aaron@heyaaron.com>
 
+[![Build Status](https://travis-ci.org/heyaaron/openmesher.png?branch=develop)](https://travis-ci.org/heyaaron/openmesher)
+
 OpenMesher is a better TunnelDigger.  They both basically create OpenVPN point to point tunnels, but OpenMesher has newer features and fixes.
 
 First off, I would like to say thank you to the developers of TunnelDigger.  I hope they don't take the following list of improvements as a slam on a great tool that helped me for many years.
