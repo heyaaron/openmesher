@@ -1,5 +1,5 @@
-configparser
 IPy
+configparser
 Jinja2
 Yapsy
 ipaddr
@@ -7,3 +7,4 @@ paramiko
 http://sourceforge.net/projects/probstat/files/latest
 pycrypto
 wsgiref
+nose

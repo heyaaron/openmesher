@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='openmesher',
-      version='0.6.3',
+      version='0.6.4',
       description='OpenMesher: Router OpenVPN p2p Mesh Link Generator',
       author='Aaron C. de Bruyn',
       author_email='aaron@heyaaron.com',

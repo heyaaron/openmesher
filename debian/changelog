@@ -1,3 +1,9 @@
+openmesher (0.6.4-0ubuntu0) precise; urgency=low
+
+  * Minor bugfixes
+
+ -- Aaron C. de Bruyn <aaron@mxprime.net>  Fri, 05 Oct 2012 18:53:18 -0700
+
 openmesher (0.6.3-1ubuntu4) oneiric; urgency=low
 
   * Fix lots of packaging issues

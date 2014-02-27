@@ -9,3 +9,4 @@ rev.db
 *.swp
 docs/_*
 openmesher.egg-info
+sddeploy.sh
