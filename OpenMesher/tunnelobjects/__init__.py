@@ -46,7 +46,7 @@ class Link():
     
     def __init__(self, serverrouter, clientrouter, linkport, iface_number, block):
         #BUG: Hack because Ubuntu 11.10 moved openvpn from /bin to /sbin and the user doesn't have a path to /sbin.  Need to search path, then check /sbin
-        for ovp in ['/bin', '/sbin', '/usr/bin', '/usr/sbin']:
+        for ovp in ['/bin', '/sbin', '/usr/bin', '/usr/sbin', '/usr/local/bin', '/usr/local/sbin']:
             if os.path.isfile('%s/openvpn' %ovp):
                 self.OpenVPNPath = "%s/openvpn" %(ovp)
                 break
